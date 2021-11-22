@@ -18,8 +18,8 @@ class User(db.Model):
     first_name = db.Column(db.Unicode(128), nullable=False, unique=False)
     last_name = db.Column(db.Unicode(128), nullable=False, unique=False)
     password = db.Column(db.Unicode(128))
-    birthdate = db.Column(db.Date())
-    phone = db.Column(db.Unicode(128), nullable=False, unique=True)
+    date_of_birth = db.Column(db.Date())
+    location = db.Column(db.Unicode(128), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     is_admin = db.Column(db.Boolean, default=False)
     authenticated = db.Column(db.Boolean, default=True)
@@ -44,11 +44,11 @@ class User(db.Model):
     def is_authenticated(self):
         return self.authenticated
 
-    def set_birthday(self, birthdate):
-        self.birthdate = birthdate
+    def set_date_of_birth(self, date_of_birth):
+        self.birthdate = date_of_birth
 
-    def set_phone(self, phone):
-        self.phone = phone
+    def set_location(self, location):
+        self.location = location
 
     def authenticate(self, password):
         checked = check_password_hash(self.password, password)
