@@ -45,7 +45,7 @@ class User(db.Model):
         return self.authenticated
 
     def set_date_of_birth(self, date_of_birth):
-        self.birthdate = date_of_birth
+        self.date_of_birth = date_of_birth
 
     def set_location(self, location):
         self.location = location

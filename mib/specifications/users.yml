@@ -154,7 +154,7 @@ components:
         - firstname
         - lastname
         - email
-        - birthdate
+        - date_of_birth
       type: object
       properties:
         firstname:
@@ -170,17 +170,15 @@ components:
           description: Customer email
           example: mario.rossi@example.org
           format: email
-        birthdate:
+        date_of_birth:
           type: string
-          description: Customer birthdate
+          description: Customer date_of_birth
           example: '2020-01-01'
           format: date
-        phone:
+        location:
           type: string
-          description: Customer phone number
-          example: '+39 3332222384'
-          minLength: 10
-          maxLength: 25
+          description: Customer location
+          example: 'Pisa'
         password:
           type: string
           description: Customer password
@@ -192,7 +190,7 @@ components:
       required:
         - email
         - password
-        - phone
+        - location
       type: object
       properties:
         email:
@@ -206,9 +204,7 @@ components:
           example: 'abcd1234'
           minLength: 5
           maxLength: 127
-        phone:
+        location:
           type: string
-          description: Customer phone number
-          example: '+39 3332222384'
-          minLength: 10
-          maxLength: 25
+          description: Customer location
+          example: 'Pisa'

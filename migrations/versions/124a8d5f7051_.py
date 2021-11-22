@@ -24,14 +24,14 @@ def upgrade():
     sa.Column('first_name', sa.Unicode(length=128), nullable=False),
     sa.Column('last_name', sa.Unicode(length=128), nullable=False),
     sa.Column('password', sa.Unicode(length=128), nullable=True),
-    sa.Column('birthdate', sa.Date(), nullable=True),
-    sa.Column('phone', sa.Unicode(length=128), nullable=False),
+    sa.Column('date_of_birth', sa.Date(), nullable=True),
+    sa.Column('location', sa.Unicode(length=128), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('is_admin', sa.Boolean(), nullable=True),
     sa.Column('authenticated', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
-    sa.UniqueConstraint('phone')
+    sa.UniqueConstraint('location')
     )
     # ### end Alembic commands ###
 
