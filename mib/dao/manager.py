@@ -38,7 +38,7 @@ class Manager(object):
         Manager.check_none(**kwargs)
 
         for bean in kwargs.values():
-            db.session.delete(bean)
+            bean.set_active(False)
         db.session.commit()
 
     @staticmethod

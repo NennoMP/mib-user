@@ -44,6 +44,9 @@ class User(db.Model):
     def is_authenticated(self):
         return self.authenticated
 
+    def set_active(self, bool):
+        self.is_active = bool
+
     def set_date_of_birth(self, date_of_birth):
         self.date_of_birth = date_of_birth
 
