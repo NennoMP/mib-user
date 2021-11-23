@@ -87,6 +87,27 @@ paths:
         default:
           description: An error occured during the unregistration of the user
 
+  /profile/{user_id}:
+    get:
+      tags: [ User ]
+      description: Get a user profile by its id
+      operationId: mib.resources.users.get_profile
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Return user profile
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the user
+
   /user_email/{user_email}:
     get:
       tags: [ User ]

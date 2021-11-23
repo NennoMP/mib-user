@@ -57,6 +57,22 @@ def get_user(user_id):
     return jsonify(user.serialize()), 200
 
 
+def get_profile(user_id):
+    """
+    Get the user profile by its current id.
+
+    :param user_id: user it
+    :return: json response
+    """
+    user = UserManager.retrieve_by_id(user_id)
+    if user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+
+    return jsonify(user.serialize_profile()), 200
+
+
+
 def get_user_by_email(user_email):
     """
     Get a user by its current email.
