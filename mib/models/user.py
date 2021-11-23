@@ -14,7 +14,9 @@ class User(db.Model):
 
     # A list of fields to be serialized
     SERIALIZE_PROFILE_LIST = ['id', 'email', 'first_name',
-                              'last_name', 'location', 'is_active', 'authenticated', 'is_anonymous']
+                              'last_name', 'location', 'is_active', 
+                              'authenticated', 'is_anonymous', 'bonus'
+                             ]
 
 
     # All fields of user
@@ -29,6 +31,7 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     authenticated = db.Column(db.Boolean, default=True)
     is_anonymous = False
+    bonus = db.Column(db.Integer, default=0)
 
     def __init__(self, *args, **kw):
         super(User, self).__init__(*args, **kw)
