@@ -34,6 +34,14 @@ class Manager(object):
         db.session.commit()
 
     @staticmethod
+    def unregister(**kwargs):
+        Manager.check_none(**kwargs)
+
+        for bean in kwargs.values():
+            db.session.delete(bean)
+        db.session.commit()
+
+    @staticmethod
     def delete(**kwargs):
         Manager.check_none(**kwargs)
 
