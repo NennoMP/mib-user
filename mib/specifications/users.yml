@@ -49,11 +49,11 @@ paths:
           description: User not found
         default:
           description: An error occured during retrieving the user
-    
-    delete:
+
+    post:
       tags: [ User ]
-      description: Delete a user by its id
-      operationId: mib.resources.users.delete_user
+      description: Unregister an user
+      operationId: mib.resources.users.unregister_user
       parameters:
         - name: user_id
           description: User Unique ID
@@ -62,13 +62,30 @@ paths:
           schema:
             type: integer
             format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: body
+              type: object
+              required:
+                - id
+                - password
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                password:
+                  type: string
+                  example: Ananas91@
       responses:
         202:
-          description: User deleted
-        404:
-          description: User not found
+          description: User unregistered
+        401:
+          description: User password does not match
         default:
-          description: An error occured during the deletion the user
+          description: An error occured during the unregistration of the user
 
   /profile/{user_id}:
     get:
@@ -110,6 +127,7 @@ paths:
           description: User not found
         default:
           description: An error occured during retrieving the user
+
   /authenticate:
     post:
       summary: Authenticate a user

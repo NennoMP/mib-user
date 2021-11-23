@@ -28,6 +28,15 @@ class UserManager(Manager):
         Manager.update(user=user)
 
     @staticmethod
+    def unregister_user(user: User):
+        Manager.unregister(user=user)
+
+    @staticmethod
+    def unregister_user_by_id(id_: int):
+        user = UserManager.retrieve_by_id(id_)
+        UserManager.unregister_user(user)
+
+    @staticmethod
     def delete_user(user: User):
         Manager.delete(user=user)
 
