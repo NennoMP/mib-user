@@ -84,6 +84,8 @@ paths:
           description: User unregistered
         401:
           description: User password does not match
+        404:
+          description: user not found
         default:
           description: An error occured during the unregistration of the user
 
@@ -103,6 +105,26 @@ paths:
       responses:
         200:
           description: Return user profile
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the user
+
+    post:
+      tags: [ User ]
+      description: Updates the language filter of the user by id
+      operationId: mib.resources.users.update_language_filter
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        202:
+          description: Language filter updated
         404:
           description: User not found
         default:

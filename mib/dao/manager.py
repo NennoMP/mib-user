@@ -34,6 +34,16 @@ class Manager(object):
         db.session.commit()
 
     @staticmethod
+    def update_language_filter(**kwargs):
+        Manager.check_none(**kwargs)
+        
+        for bean in kwargs.values():
+            print(bean.has_language_filter)
+            bean.has_language_filter = not bean.has_language_filter
+            print(bean.has_language_filter)
+        db.session.commit()
+
+    @staticmethod
     def unregister(**kwargs):
         Manager.check_none(**kwargs)
 

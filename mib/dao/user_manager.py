@@ -27,6 +27,9 @@ class UserManager(Manager):
     def update_user(user: User):
         Manager.update(user=user)
 
+    def update_language_filter(user: User):
+        Manager.update_language_filter(user=user)
+
     @staticmethod
     def unregister_user(user: User):
         Manager.unregister(user=user)

@@ -15,7 +15,8 @@ class User(db.Model):
     # A list of fields to be serialized
     SERIALIZE_PROFILE_LIST = ['id', 'email', 'first_name',
                               'last_name', 'location', 'is_active', 
-                              'authenticated', 'is_anonymous', 'bonus'
+                              'authenticated', 'is_anonymous', 'bonus',
+                              'has_language_filter'
                              ]
 
 
@@ -31,6 +32,7 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     authenticated = db.Column(db.Boolean, default=True)
     is_anonymous = False
+    has_language_filter = db.Column(db.Boolean, default=False)
     bonus = db.Column(db.Integer, default=0)
 
     def __init__(self, *args, **kw):
@@ -54,6 +56,9 @@ class User(db.Model):
 
     def set_active(self, bool):
         self.is_active = bool
+
+    def update_language_filter(self):
+        self.has_language_filter = not self.has_language_filter
 
     def set_date_of_birth(self, date_of_birth):
         self.date_of_birth = date_of_birth
