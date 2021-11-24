@@ -41,6 +41,33 @@ def create_user():
     return jsonify(response_object), 201
 
 
+def update_profile(user_id, body):
+    """This method allows the update of a user profile.
+    """
+    
+    user = UserManager.retrieve_by_id(user_id)
+    if user is None:
+        return jsonify({
+            'status': 'Not found'
+        }), 404
+
+    user.set_email(body['email'])
+    user.set_first_name(body['firstname'])
+    user.set_last_name(body['lastname'])
+    user.set_location(body['location'])
+    UserManager.update_user(user)
+
+    response_object = {
+        'user': user.serialize(),
+        'status': 'success',
+        'message': 'Successfully updated',
+    }
+    
+    return jsonify(response_object), 202
+
+
+
+
 def get_user(user_id):
     """
     Get a user by its current id.

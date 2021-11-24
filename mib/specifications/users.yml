@@ -109,6 +109,52 @@ paths:
           description: User not found
         default:
           description: An error occured during retrieving the user
+    
+    post:
+      tags: [ User ]
+      description: Update an user
+      operationId: mib.resources.users.update_profile
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: body
+              type: object
+              required:
+                - email
+                - firstname
+                - lastname
+                - location
+              properties:
+                email:
+                  type: string
+                  example: name@example.com
+                firstname:
+                  type: string
+                  example: name
+                lastname:
+                  type: string
+                  example: name
+                location:
+                  type: string
+                  example: city
+      responses:
+        202:
+          description: User updated
+        404:
+          description: User not updated
+        default:
+          description: An error occured during the update of the user
+
 
   /profile/{user_id}/language_filter: 
     post:
