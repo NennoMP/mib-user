@@ -110,6 +110,7 @@ paths:
         default:
           description: An error occured during retrieving the user
 
+  /profile/{user_id}/language_filter: 
     post:
       tags: [ User ]
       description: Updates the language filter of the user by id
@@ -129,6 +130,7 @@ paths:
           description: User not found
         default:
           description: An error occured during retrieving the user
+
 
   /user_email/{user_email}:
     get:
