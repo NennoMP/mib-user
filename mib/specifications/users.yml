@@ -194,6 +194,7 @@ components:
         - lastname
         - email
         - date_of_birth
+        - location
       type: object
       properties:
         firstname:
@@ -224,6 +225,7 @@ components:
           example: 'abcd1234'
           minLength: 5
           maxLength: 127
+
     
     UpdateUser:
       required:

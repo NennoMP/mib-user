@@ -1,5 +1,4 @@
 from flask import request, jsonify
-from flask_login import current_user
 from sqlalchemy.orm import joinedload
 from mib.dao.user_manager import UserManager
 from mib.models.user import User
