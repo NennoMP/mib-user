@@ -112,7 +112,8 @@ def update_language_filter(user_id):
         }
         return jsonify(response_object), 404
     else:
-        UserManager.update_language_filter(user)
+        user.has_language_filter = not user.has_language_filter
+        UserManager.update_user(user)
         response_object = {
             'status': 'success',
             'message': 'Successfully updated language filter',
