@@ -7,6 +7,29 @@ import datetime
 from werkzeug.security import check_password_hash
 
 
+# UTILS FOR FORM CHECKS
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+SPECIAL_CHARACTERS = '@#$%&*-_/'
+ALLOWED_EMAILS = {'@test.com',
+                  '@hotmail.com',
+                  '@hotmail.it',
+                  '@outlook.com',
+                  '@outlook.it',
+                  '@gmail.com',
+                  '@gmail.it',
+                  '@yahoo.com',
+                  '@yahoo.it',
+                  '@studenti.unipi.it',
+                  '@di.unipi.it'
+                  }
+
+def allowed_email(email):
+    '''Utility function to check proper format of the email field.'''
+    for e in ALLOWED_EMAILS:
+        if str(email).endswith(e):
+            return True
+    return False
+
 
 def create_user():
     """This method allows the creation of a new user.
@@ -51,10 +74,27 @@ def update_profile(user_id, body):
             'status': 'Not found'
         }), 404
 
+    if not allowed_email(body['email']):
+        return jsonify({
+            'status': 'not success',
+            'message': 'Incorrect email format'
+        }), 409
+
+    
+    if user.email != body['email']:
+        exist_user = UserManager.retrieve_by_email(body['email'])
+        if exist_user is not None:
+            return jsonify({
+                'status': 'not success',
+                'message': 'Email already exists'
+            }), 409
+    
+
     user.set_email(body['email'])
     user.set_first_name(body['firstname'])
     user.set_last_name(body['lastname'])
     user.set_location(body['location'])
+    
     UserManager.update_user(user)
 
     response_object = {
@@ -63,8 +103,7 @@ def update_profile(user_id, body):
         'message': 'Successfully updated',
     }
     
-    return jsonify(response_object), 202
-
+    return jsonify(response_object), 200
 
 
 
