@@ -16,7 +16,7 @@ class User(db.Model):
     SERIALIZE_PROFILE_LIST = ['id', 'email', 'first_name',
                               'last_name', 'location', 'is_active', 
                               'authenticated', 'is_anonymous', 'bonus',
-                              'has_language_filter'
+                              'has_language_filter', 'profile_pic'
                              ]
 
 
@@ -34,6 +34,7 @@ class User(db.Model):
     is_anonymous = False
     has_language_filter = db.Column(db.Boolean, default=False)
     bonus = db.Column(db.Integer, default=0)
+    profile_pic = db.Column(db.String)  # profile pic path
 
     def __init__(self, *args, **kw):
         super(User, self).__init__(*args, **kw)
@@ -65,6 +66,9 @@ class User(db.Model):
 
     def set_location(self, location):
         self.location = location
+
+    def set_profile_pic(self, profile_pic):
+        self.profile_pic = profile_pic
 
     def authenticate(self, password):
         checked = check_password_hash(self.password, password)

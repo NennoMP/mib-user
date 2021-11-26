@@ -6,6 +6,8 @@ import datetime
 
 from werkzeug.security import check_password_hash
 
+from ..utils import allowed_file, image_to_base64, save_image
+
 
 
 def create_user():
@@ -30,6 +32,7 @@ def create_user():
     user.set_last_name(post_data.get('lastname'))
     user.set_date_of_birth(date_of_birth)
     user.set_location(post_data.get('location'))
+    user.set_profile_pic('mib/static/images/default.jpg')
     UserManager.create_user(user)
 
     response_object = {
@@ -95,7 +98,35 @@ def get_profile(user_id):
         response = {'status': 'User not present'}
         return jsonify(response), 404
 
-    return jsonify(user.serialize_profile()), 200
+    dict = user.serialize_profile()
+    dict['profile_pic'] = image_to_base64(dict['profile_pic'])
+    return jsonify(dict), 200
+
+
+def update_profile_picture(user_id, body):
+    """
+    Update the profile picture of the user by its user_id
+
+    :param user_id: user id
+    :param body: dict that contains the file uploaded
+    :return: json response
+    """
+
+    user = UserManager.retrieve_by_id(user_id)
+    if user is None:
+        response_object = {
+            'status': 'failed',
+            'message': 'Could not update the profile picture, user not found',
+        }
+        return jsonify(response_object), 404
+    else:
+        user.set_profile_pic(save_image(user_id, body['file']))
+        UserManager.update_user(user)
+        response_object = {
+            'status': 'success',
+            'message': 'Profile picture updated',
+        }
+        return jsonify(response_object), 202
 
 def update_language_filter(user_id):
     """
@@ -139,7 +170,7 @@ def unregister_user(user_id, body):
     Unregister an user by its id if the password macthes
 
     :param user_id: user id
-    :param password: password inserted in the unregister form
+    :param body: dictionary that contains the password inserted in the unregister form
     :return: json response
     """
 
