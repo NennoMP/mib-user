@@ -168,6 +168,23 @@ paths:
           schema:
             type: integer
             format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: body
+              type: object
+              required:
+                - format
+                - file
+              properties:
+                format:
+                  type: string
+                  example: png
+                file:
+                  type: string
+                  format: binary
       responses:
         202:
           description: Profile picture updated

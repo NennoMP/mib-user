@@ -1,6 +1,8 @@
 from werkzeug.security import generate_password_hash, check_password_hash
+from wtforms.fields.core import DateField
 
 from mib import db
+from ..utils import image_to_base64
 
 
 class User(db.Model):
@@ -19,7 +21,6 @@ class User(db.Model):
                               'has_language_filter', 'profile_pic'
                              ]
 
-
     # All fields of user
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.Unicode(128), nullable=False, unique=True)
@@ -28,55 +29,77 @@ class User(db.Model):
     password = db.Column(db.Unicode(128))
     date_of_birth = db.Column(db.Date())
     location = db.Column(db.Unicode(128), nullable=False)
+    profile_pic = db.Column(db.String)  # profile picture path
+    bonus = db.Column(db.Integer, default=0)
     is_active = db.Column(db.Boolean, default=True)
     is_admin = db.Column(db.Boolean, default=False)
     authenticated = db.Column(db.Boolean, default=True)
     is_anonymous = False
     has_language_filter = db.Column(db.Boolean, default=False)
-    bonus = db.Column(db.Integer, default=0)
-    profile_pic = db.Column(db.String)  # profile pic path
 
     def __init__(self, *args, **kw):
         super(User, self).__init__(*args, **kw)
         self.authenticated = False
 
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-
-    def set_email(self, email):
+    # Set user email
+    def set_email(self, email: str):
         self.email = email
 
-    def set_first_name(self, name):
+    # Set user first_name
+    def set_first_name(self, name: str):
         self.first_name = name
 
-    def set_last_name(self, name):
+    # Set user lastname
+    def set_last_name(self, name: str):
         self.last_name = name
 
-    def is_authenticated(self):
-        return self.authenticated
+    # Set user password
+    def set_password(self, password: str):
+        self.password = generate_password_hash(password)
 
-    def set_active(self, bool):
-        self.is_active = bool
-
-    def update_language_filter(self):
-        self.has_language_filter = not self.has_language_filter
-
+    # Set user birth date
     def set_date_of_birth(self, date_of_birth):
         self.date_of_birth = date_of_birth
 
-    def set_location(self, location):
+    # Set user location
+    def set_location(self, location: str):
         self.location = location
 
-    def set_profile_pic(self, profile_pic):
+    # Set user profile picture path
+    def set_profile_pic(self, profile_pic: str):
         self.profile_pic = profile_pic
 
-    def authenticate(self, password):
+    # Set user lottery bonus
+    def set_lottery_bonus(self, bonus):
+        self.bonus += bonus
+
+    # Set user is active
+    def set_active(self, bool: bool):
+        self.is_active = bool
+
+    # Authenticate the user
+    def authenticate(self, password: str):
         checked = check_password_hash(self.password, password)
         self.authenticated = checked
         return self.authenticated
 
+    # Update user language filter
+    def update_language_filter(self):
+        self.has_language_filter = not self.has_language_filter
+
+    # Get user is authenticayed
+    def is_authenticated(self):
+        return self.authenticated
+
+    # Serialize api-gateway user model information
     def serialize(self):
         return dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
 
+    # Serialize profile information to display
     def serialize_profile(self):
-        return dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_PROFILE_LIST])
+        dict = {}
+        for k in self.SERIALIZE_PROFILE_LIST:
+            dict[k] = self.__getattribute__(k)
+        dict['profile_pic'] = image_to_base64(dict['profile_pic'])
+        
+        return dict

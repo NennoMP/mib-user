@@ -1,41 +1,16 @@
-from flask import request, jsonify
-from sqlalchemy.orm import joinedload
-from mib.dao.user_manager import UserManager
-from mib.models.user import User
 import datetime
 
+from flask import request, jsonify
 from werkzeug.security import check_password_hash
 
-from ..utils import allowed_file, image_to_base64, save_image
-
-
-# UTILS FOR FORM CHECKS
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-SPECIAL_CHARACTERS = '@#$%&*-_/'
-ALLOWED_EMAILS = {'@test.com',
-                  '@hotmail.com',
-                  '@hotmail.it',
-                  '@outlook.com',
-                  '@outlook.it',
-                  '@gmail.com',
-                  '@gmail.it',
-                  '@yahoo.com',
-                  '@yahoo.it',
-                  '@studenti.unipi.it',
-                  '@di.unipi.it'
-                  }
-
-def allowed_email(email):
-    '''Utility function to check proper format of the email field.'''
-    for e in ALLOWED_EMAILS:
-        if str(email).endswith(e):
-            return True
-    return False
+from mib.dao.user_manager import UserManager
+from mib.models.user import User
+from ..utils import save_image, allowed_email
 
 
 def create_user():
-    """This method allows the creation of a new user.
-    """
+    """This method allows the creation of a new user."""
+
     post_data = request.get_json()
     email = post_data.get('email')
     password = post_data.get('password')
@@ -67,9 +42,8 @@ def create_user():
     return jsonify(response_object), 201
 
 
-def update_profile(user_id, body):
-    """This method allows the update of a user profile.
-    """
+def update_profile(user_id: int, body):
+    """This method allows the update of a user profile by its current id."""
     
     user = UserManager.retrieve_by_id(user_id)
     if user is None:
@@ -91,13 +65,11 @@ def update_profile(user_id, body):
                 'status': 'not success',
                 'message': 'Email already exists'
             }), 409
-    
 
     user.set_email(body['email'])
     user.set_first_name(body['firstname'])
     user.set_last_name(body['lastname'])
     user.set_location(body['location'])
-    
     UserManager.update_user(user)
 
     response_object = {
@@ -109,14 +81,14 @@ def update_profile(user_id, body):
     return jsonify(response_object), 200
 
 
-
-def get_user(user_id):
+def get_user(user_id: int):
     """
     Get a user by its current id.
 
-    :param user_id: user it
+    :param user_id: user id
     :return: json response
     """
+
     user = UserManager.retrieve_by_id(user_id)
     if user is None:
         response = {'status': 'User not present'}
@@ -125,7 +97,7 @@ def get_user(user_id):
     return jsonify(user.serialize()), 200
 
 
-def get_profile(user_id):
+def get_profile(user_id: int):
     """
     Get the user profile by its current id.
 
@@ -137,14 +109,12 @@ def get_profile(user_id):
         response = {'status': 'User not present'}
         return jsonify(response), 404
 
-    dict = user.serialize_profile()
-    dict['profile_pic'] = image_to_base64(dict['profile_pic'])
-    return jsonify(dict), 200
+    return jsonify(user.serialize_profile()), 200
 
 
-def update_profile_picture(user_id, body):
+def update_profile_picture(user_id: int, body):
     """
-    Update the profile picture of the user by its user_id
+    Update the profile picture of the user by its current id.
 
     :param user_id: user id
     :param body: dict that contains the file uploaded
@@ -167,13 +137,15 @@ def update_profile_picture(user_id, body):
         }
         return jsonify(response_object), 202
 
-def update_language_filter(user_id):
+
+def update_language_filter(user_id: int):
     """
-    Update the language filter of the user by its user_id
+    Update the language filter of the user by its current id.
 
     :param user_id: user id
     :return: json response
     """
+
     user = UserManager.retrieve_by_id(user_id)
     if user is None:
         response_object = {
@@ -190,13 +162,15 @@ def update_language_filter(user_id):
         }
         return jsonify(response_object), 202
 
-def get_user_by_email(user_email):
+
+def get_user_by_email(user_email: str):
     """
     Get a user by its current email.
 
     :param user_email: user email
     :return: json response
     """
+
     user = UserManager.retrieve_by_email(user_email)
     if user is None:
         response = {'status': 'User not present'}
@@ -204,9 +178,9 @@ def get_user_by_email(user_email):
 
     return jsonify(user.serialize()), 200
 
-def unregister_user(user_id, body):
+def unregister_user(user_id: int, body):
     """
-    Unregister an user by its id if the password macthes
+    Unregister an user by its current id if the password macthes.
 
     :param user_id: user id
     :param body: dictionary that contains the password inserted in the unregister form
@@ -215,27 +189,26 @@ def unregister_user(user_id, body):
 
     user_id = body['id']
     _user = UserManager.retrieve_by_id(user_id)
-
     if _user is None:
         response = {'status': 'User not present'}
         return jsonify(response), 404
-
-    if check_password_hash(_user.password, body['password']):
-        UserManager.unregister_user_by_id(user_id)
-        response_object = {
-            'status': 'success',
-            'message': 'Successfully unregistered',
-        }
-        return jsonify(response_object), 202
     else:
-        response_object = {
-            'status': 'failed',
-            'message': 'Could not unregister, inserted password does not match',
-        }
-        return jsonify(response_object), 401
+        if check_password_hash(_user.password, body['password']):
+            UserManager.unregister_user_by_id(user_id)
+            response_object = {
+                'status': 'success',
+                'message': 'Successfully unregistered',
+            }
+            return jsonify(response_object), 202
+        else:
+            response_object = {
+                'status': 'failed',
+                'message': 'Could not unregister, inserted password does not match',
+            }
+            return jsonify(response_object), 401
 
 
-def delete_user(user_id):
+def delete_user(user_id: int):
     """
     Delete the user with id = user_id.
 

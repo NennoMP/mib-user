@@ -2,7 +2,6 @@ from mib import db
 
 
 class Manager(object):
-
     db_session = db.session
 
     @staticmethod
@@ -17,7 +16,6 @@ class Manager(object):
 
         for bean in kwargs.values():
             db.session.add(bean)
-
         db.session.commit()
 
     @staticmethod
