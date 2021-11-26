@@ -148,9 +148,9 @@ paths:
                   type: string
                   example: city
       responses:
-        202:
+        200:
           description: User updated
-        404:
+        409:
           description: User not updated
         default:
           description: An error occured during the update of the user
