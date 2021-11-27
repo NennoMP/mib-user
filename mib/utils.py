@@ -7,7 +7,6 @@ from werkzeug.utils import secure_filename
 
 # UTILS FOR FORM CHECKS
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-SPECIAL_CHARACTERS = '@#$%&*-_/'
 ALLOWED_EMAILS = {'@test.com',
                   '@hotmail.com',
                   '@hotmail.it',
@@ -51,6 +50,7 @@ def image_to_base64(picture_path: str):
 def allowed_file(format):
     """Utility function for checking if the profile picture has valid format."""
     return format in ALLOWED_EXTENSIONS
+
 
 def allowed_email(email):
     """Utility function for checking if the email has valid format."""

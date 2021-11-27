@@ -24,7 +24,7 @@ paths:
       responses:
         201:
           description: Created
-        200:
+        403:
           description: User already exists
         default:
           description: Error during creation of the user
