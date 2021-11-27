@@ -292,6 +292,19 @@ paths:
                 properties:
                   error_message:
                     type: string        
+
+  /users/:
+    get:
+      tags: [ User ]
+      description: Get a users list
+      operationId: mib.resources.users.get_users_list
+      responses:
+        200:
+          description: Return users list
+        default:
+          description: An error occured during retrieving the user
+    
+  
 components:
   schemas:
     User:

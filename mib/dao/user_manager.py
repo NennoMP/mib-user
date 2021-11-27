@@ -12,6 +12,11 @@ class UserManager(Manager):
     def retrieve_by_id(id_: int):
         Manager.check_none(id=id_)
         return User.query.get(id_)
+    
+    @staticmethod
+    def retrieve_users_list():
+        return User.query.all()
+
 
     @staticmethod
     def retrieve_by_email(email: str):

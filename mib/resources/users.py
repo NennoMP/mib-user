@@ -112,6 +112,16 @@ def get_profile(user_id: int):
     return jsonify(user.serialize_profile()), 200
 
 
+def get_users_list():
+    _users = UserManager.retrieve_users_list()
+    users_list = [user.serialize_profile() for user in _users]
+    response_object = {
+        'users_list': users_list,
+        'status': 'success'
+    }
+    return jsonify(response_object), 200
+
+
 def update_profile_picture(user_id: int, body):
     """
     Update the profile picture of the user by its current id.
