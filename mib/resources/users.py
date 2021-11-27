@@ -18,8 +18,9 @@ def create_user():
     searched_user = UserManager.retrieve_by_email(email)
     if searched_user is not None:
         return jsonify({
-            'status': 'Already present'
-        }), 200
+            'status': 'Already present',
+            'message': 'User already exists'
+        }), 403
 
     user = User()
     date_of_birth = datetime.datetime.strptime(post_data.get('date_of_birth'),
