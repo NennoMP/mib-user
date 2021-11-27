@@ -12,13 +12,13 @@ class User(db.Model):
     __tablename__ = 'User'
 
     # A list of fields to be serialized
-    SERIALIZE_LIST = ['id', 'email', 'is_active', 'authenticated', 'is_anonymous']
+    SERIALIZE_LIST = ['id', 'email', 'is_active', 'authenticated', 'is_anonymous', 'is_admin']
 
     # A list of fields to be serialized
     SERIALIZE_PROFILE_LIST = ['id', 'email', 'first_name',
                               'last_name', 'location', 'is_active', 
                               'authenticated', 'is_anonymous', 'bonus',
-                              'has_language_filter', 'profile_pic'
+                              'has_language_filter', 'profile_pic', 'is_admin'
                              ]
 
     # All fields of user
