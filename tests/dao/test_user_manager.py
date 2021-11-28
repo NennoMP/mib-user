@@ -27,7 +27,7 @@ class TestUserManager(DaoTest):
             self.test_user.assertUserEquals(user1, user)
             self.user_manager.delete_user(user=user)
 
-    def test_retried_by_email(self):
+    def test_retrived_by_email(self):
         base_user = self.test_user.generate_random_user()
         self.user_manager.create_user(user=base_user)
         retrieved_user = self.user_manager.retrieve_by_email(email=base_user.email)

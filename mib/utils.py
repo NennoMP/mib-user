@@ -8,6 +8,9 @@ from werkzeug.utils import secure_filename
 # UTILS FOR FORM CHECKS
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 ALLOWED_EMAILS = {'@test.com',
+                  '@test.it',
+                  '@example.com',
+                  '@example.it',
                   '@hotmail.com',
                   '@hotmail.it',
                   '@outlook.com',
