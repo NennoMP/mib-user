@@ -18,28 +18,4 @@ class ViewTest(unittest.TestCase):
         cls.test_user = TestUser
 
         from mib.dao.user_manager import UserManager
-        cls.user_manager = UserManager()
-
-    def login_test_user(self):
-        """
-        Simulate the user login for testing the resources
-        :return: user
-        """
-        user = self.test_user.generate_random_user()
-        psw = user.password
-        user.set_password(user.password)
-
-        self.user_manager.create_user(user=user)
-        data = {
-            'email': user.email,
-            'password': psw,
-        }
-
-        response = self.client.post('/authenticate', json=data)
-        json_response = response.json
-
-        assert response.status_code == 200
-        assert json_response["authentication"] == 'success'
-        assert json_response['user'] is not None
-
-        return user
+        cls.user_manager = UserManager()  
