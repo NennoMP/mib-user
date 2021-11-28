@@ -12,16 +12,16 @@ class User(db.Model):
     __tablename__ = 'User'
 
     # A list of fields to be serialized
-    SERIALIZE_LIST = ['id', 'email', 'is_active', 'authenticated', 'is_anonymous']
+    SERIALIZE_LIST = ['id', 'email', 'is_active', 'is_admin', 'is_reported', 'is_banned', 'authenticated', 'is_anonymous']
 
     # A list of fields to be serialized
     SERIALIZE_PROFILE_LIST = ['id', 'email', 'first_name',
-                              'last_name', 'location', 'is_active', 
-                              'authenticated', 'is_anonymous', 'bonus',
+                              'last_name', 'location', 'is_active',
+                              'is_admin', 'is_reported', 'is_banned', 'authenticated', 'is_anonymous', 'bonus',
                               'has_language_filter', 'profile_pic'
                              ]
 
-    # All fields of user
+    # Data
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.Unicode(128), nullable=False, unique=True)
     first_name = db.Column(db.Unicode(128), nullable=False, unique=False)
@@ -31,10 +31,14 @@ class User(db.Model):
     location = db.Column(db.Unicode(128), nullable=False)
     profile_pic = db.Column(db.String)  # profile picture path
     bonus = db.Column(db.Integer, default=0)
+
+    # Booleans
     is_active = db.Column(db.Boolean, default=True)
     is_admin = db.Column(db.Boolean, default=False)
-    authenticated = db.Column(db.Boolean, default=True)
+    is_reported = db.Column(db.Boolean, default=False)
+    is_banned = db.Column(db.Boolean, default=False)
     is_anonymous = False
+    authenticated = db.Column(db.Boolean, default=True)
     has_language_filter = db.Column(db.Boolean, default=False)
 
     def __init__(self, *args, **kw):
@@ -76,6 +80,18 @@ class User(db.Model):
     # Set user is active
     def set_active(self, bool: bool):
         self.is_active = bool
+
+    # Set user is admin
+    def set_admin(self, bool: bool):
+        self.is_admin = bool
+
+    # Set user is reported
+    def set_reported(self, bool: bool):
+        self.is_reported = bool
+    
+    # Set user is banned
+    def updated_banned(self):
+        self.is_banned = not self.is_banned
 
     # Authenticate the user
     def authenticate(self, password: str):

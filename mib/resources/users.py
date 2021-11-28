@@ -123,6 +123,78 @@ def get_users_list():
     return jsonify(response_object), 200
 
 
+def report_user(user_email: str):
+    """
+    Report an user by its current email.
+
+    :param user_id: id of target user
+    :return: json response
+    """
+
+    _user = UserManager.retrieve_by_email(user_email)
+    if _user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+    else:
+        UserManager.report_user_by_email(user_email)
+        response_object = {
+            'status': 'Success',
+            'message': 'Successfully reported'
+        }
+        return jsonify(response_object), 202
+
+
+def unreport_user(user_email: str):
+    """
+    Unreport an user by its current email.
+
+    :param user_id: id of target user
+    :return: json response
+    """
+
+    _user = UserManager.retrieve_by_email(user_email)
+    if _user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+    else:
+        if _user.is_admin:
+            UserManager.unreport_user_by_email(user_email)
+            response_object = {
+                'status': 'Success',
+                'message': 'Successfully unreported'
+            }
+            return jsonify(response_object), 202
+
+
+def update_block_user(dest_user_id: int, body):
+    """
+    (Un)Block an user by its current id.
+
+    :param dest_user_id: id of target user
+    :return: json response
+    """
+    # TODO: need blocklist table and microservice
+    pass
+
+
+def update_ban_user(user_email: str):
+    """
+    (Un)Ban an user by its current email.
+
+    :param user_email: email of the target user
+    :return: json response
+    """
+
+    _user = UserManager.retrieve_by_id(user_email)
+    if _user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+    else:
+        if _user.is_admin:
+            response_object = UserManager.update_ban_user_by_email(user_email)
+            return jsonify(response_object), 202
+
+
 def update_profile_picture(user_id: int, body):
     """
     Update the profile picture of the user by its current id.

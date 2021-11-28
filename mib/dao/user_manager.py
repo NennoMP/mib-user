@@ -37,6 +37,56 @@ class UserManager(Manager):
         UserManager.unregister_user(user)
 
     @staticmethod
+    def report_user(user: User):
+        Manager.report(user=user)
+
+    @staticmethod
+    def report_user_by_email(email: str):
+        user = UserManager.retrieve_by_email(email)
+        UserManager.report_user(user)
+
+    @staticmethod
+    def unreport_user(user: User):
+        Manager.unreport(user=user)
+
+    @staticmethod
+    def unreport_user_by_email(email: str):
+        user = UserManager.retrieve_by_email(email)
+        UserManager.unreport_user(user)
+
+    """@staticmethod
+    def update_block_user(user: User):
+        Manager.update_block(user=user)
+
+    @staticmethod
+    def update_block_user_by_id(id_: int):
+        user = UserManager.retrieve_by_id(id_)
+        UserManager.update_block_user(user)
+    """
+
+    @staticmethod
+    def update_ban_user(user: User):
+        Manager.update_ban(user=user)
+
+    @staticmethod
+    def update_ban_user_by_email(email: str):
+        user = UserManager.retrieve_by_email(email)
+        UserManager.update_ban_user(user)
+
+        if user.is_banned:
+            response_object = {
+            'status': 'Success',
+            'message': 'Successfully unbanned',
+        }
+        else:
+            response_object = {
+            'status': 'Success',
+            'message': 'Successfully banned',
+        }
+
+        return response_object
+    
+    @staticmethod
     def delete_user(user: User):
         Manager.delete(user=user)
 

@@ -1,7 +1,9 @@
 """
 Flask initialization
 """
+from operator import mod
 import os
+import datetime
 
 __version__ = '0.1'
 
@@ -63,7 +65,8 @@ def create_app():
     )
 
     # requiring the list of models
-    import mib.models
+    from mib.models.user import User
+    from mib.dao.user_manager import UserManager
 
     # creating migrate
     migrate = Migrate(
@@ -74,7 +77,26 @@ def create_app():
     # checking the environment
     if flask_env == 'testing' or flask_env == 'development':
         # we need to populate the db
-        db.create_all()
+        db.create_all(app=app)
+
+        # Create first admin user
+        with app.app_context():
+            q = db.session.query(User).filter(User.email == "admin@example.com")
+            user = q.first()
+            if user is None:
+                user = User()
+
+                user.set_email('admin@example.com')
+                user.set_password('Admin1@')
+                user.set_first_name('Admin')
+                user.set_last_name('Admin')
+                date_of_birth = datetime.datetime.strptime('1997-09-25',    '%Y-%m-%d')
+                user.set_date_of_birth(date_of_birth)
+                user.set_location('Pisa')
+                user.set_profile_pic('mib/static/images/default.jpg')
+                user.set_admin(True)
+                UserManager.create_user(user)
+
 
     # registering to api app all specifications
     register_specifications(api_app)
