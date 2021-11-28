@@ -19,7 +19,8 @@ class User(db.Model):
                               'last_name', 'location', 'is_active',
                               'is_admin', 'is_reported', 'is_banned', 'authenticated', 'is_anonymous', 'bonus',
                               'has_language_filter', 'profile_pic'
-                             ]
+                            ]
+
 
     # Data
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -90,7 +91,7 @@ class User(db.Model):
         self.is_reported = bool
     
     # Set user is banned
-    def updated_banned(self):
+    def update_banned(self):
         self.is_banned = not self.is_banned
 
     # Authenticate the user

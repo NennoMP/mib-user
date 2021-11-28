@@ -21,11 +21,13 @@ ALLOWED_EMAILS = {'@test.com',
                   '@yahoo.it',
                   '@studenti.unipi.it',
                   '@di.unipi.it'
-                  }
+}
 
 
 def save_image(user_id: int, file: str):
     """Utility function for saving a new profile picture."""
+
+
 
     filename = 'mib/static/images/user_' + str(user_id) + ".png"
     with open(filename, "wb") as outf:

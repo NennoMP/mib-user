@@ -144,26 +144,37 @@ def report_user(user_email: str):
         return jsonify(response_object), 202
 
 
-def unreport_user(user_email: str):
+def unreport_user(dest_user_email: str, body):
     """
     Unreport an user by its current email.
 
-    :param user_id: id of target user
+    :param user_email: email of target user
     :return: json response
     """
 
-    _user = UserManager.retrieve_by_email(user_email)
-    if _user is None:
+    src_user_id = body['src_user_id']
+
+    dest_user = UserManager.retrieve_by_email(dest_user_email)
+    src_user = UserManager.retrieve_by_id(src_user_id)
+    if dest_user is None:
         response = {'status': 'User not present'}
         return jsonify(response), 404
     else:
-        if _user.is_admin:
-            UserManager.unreport_user_by_email(user_email)
+        if src_user.is_admin:
+            UserManager.unreport_user_by_email(dest_user_email)
             response_object = {
                 'status': 'Success',
                 'message': 'Successfully unreported'
             }
             return jsonify(response_object), 202
+        else:
+            response_object = {
+                'status': 'Failed',
+                'message': 'Unauthorized action'
+            }
+            return jsonify(response_object), 401
+
+
 
 
 def update_block_user(dest_user_id: int, body):
@@ -177,7 +188,7 @@ def update_block_user(dest_user_id: int, body):
     pass
 
 
-def update_ban_user(user_email: str):
+def update_ban_user(dest_user_email: str, body):
     """
     (Un)Ban an user by its current email.
 
@@ -185,14 +196,24 @@ def update_ban_user(user_email: str):
     :return: json response
     """
 
-    _user = UserManager.retrieve_by_id(user_email)
-    if _user is None:
+    src_user_id = body['src_user_id']
+
+    dest_user = UserManager.retrieve_by_email(dest_user_email)
+    src_user = UserManager.retrieve_by_id(src_user_id)
+    if dest_user is None:
         response = {'status': 'User not present'}
         return jsonify(response), 404
     else:
-        if _user.is_admin:
-            response_object = UserManager.update_ban_user_by_email(user_email)
+        if src_user.is_admin:
+            response_object = UserManager.update_ban_user_by_email(dest_user_email)
             return jsonify(response_object), 202
+        else:
+            response_object = {
+            'status': 'Failed',
+            'message': 'Unauthorized action'
+            }
+            return jsonify(response_object), 401
+            
 
 
 def update_profile_picture(user_id: int, body):

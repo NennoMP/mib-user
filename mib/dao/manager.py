@@ -69,6 +69,8 @@ class Manager(object):
 
         for bean in kwargs.values():
             bean.update_banned()
+            if bean.is_banned:
+                bean.set_reported(False)
         db.session.commit()
 
     @staticmethod

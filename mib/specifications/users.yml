@@ -334,21 +334,36 @@ paths:
         default:
           description: An error occured during the report of the user
 
-  /users/<user_email>/unreport_user:
+  /users/<dest_user_email>/unreport_user:
     post:
       tags: [ User ]
       description: Unreport an user by its email
       operationId: mib.resources.users.unreport_user
       parameters:
-        - name: user_email
-          description: User Unique Email
+        - name: dest_user_email
+          description: Target User Unique Email
           in: path
           required: true
           schema:
             type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: body
+              type: object
+              required:
+                - src_user_id
+              properties:
+                id:
+                  type: integer
+                  format: int64
       responses:
         202:
           description: User unreported
+        401:
+          description: Unauthorized action
         404:
           description: User not found
         default:
@@ -387,21 +402,36 @@ paths:
         default:
           description: An error occured during the (un)block of the user
 
-  /users/<user_email>/update_ban_user:
+  /users/<dest_user_email>/update_ban_user:
     post:
       tags: [ User ]
       description: (Un)Ban an user by its email
       operationId: mib.resources.users.update_ban_user
       parameters:
-        - name: user_email
-          description: User Unique Email
+        - name: dest_user_email
+          description: Target User Unique Email
           in: path
           required: true
           schema:
             type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: body
+              type: object
+              required:
+                - src_user_id
+              properties:
+                id:
+                  type: integer
+                  format: int64
       responses:
         202:
           description: User (un)banned
+        401:
+          description: Unauthorized action
         404:
           description: User not found
         default:

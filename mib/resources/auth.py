@@ -19,15 +19,14 @@ def authenticate(auth):
     }
     response_code = 401
 
-    """print(user)
     if user.is_banned:
         response = {
             'authentication': 'failure',
             'message': 'Your account has been banned!',
             'user': None
         }
-        response_code = 403"""
-    if user and user.authenticate(auth['password']):
+        response_code = 403
+    elif user and user.authenticate(auth['password']):
         response['authentication'] = 'success'
         response['message'] = 'Valid credentials'
         response['user'] = user.serialize()

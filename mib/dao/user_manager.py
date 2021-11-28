@@ -71,7 +71,6 @@ class UserManager(Manager):
     @staticmethod
     def update_ban_user_by_email(email: str):
         user = UserManager.retrieve_by_email(email)
-        UserManager.update_ban_user(user)
 
         if user.is_banned:
             response_object = {
@@ -83,6 +82,8 @@ class UserManager(Manager):
             'status': 'Success',
             'message': 'Successfully banned',
         }
+
+        UserManager.update_ban_user(user)
 
         return response_object
     
