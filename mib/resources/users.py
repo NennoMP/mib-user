@@ -136,7 +136,8 @@ def report_user(user_email: str):
         response = {'status': 'User not present'}
         return jsonify(response), 404
     else:
-        UserManager.report_user_by_email(user_email)
+        if not _user.is_reported:
+            UserManager.report_user_by_email(user_email)
         response_object = {
             'status': 'Success',
             'message': 'Successfully reported'
