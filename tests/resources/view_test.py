@@ -1,6 +1,5 @@
 import unittest
 
-
 class ViewTest(unittest.TestCase):
     """
     This class should be implemented by
@@ -19,3 +18,4 @@ class ViewTest(unittest.TestCase):
 
         from mib.dao.user_manager import UserManager
         cls.user_manager = UserManager()  
+        

@@ -30,6 +30,10 @@ class Manager(object):
     def update(**kwargs):
         Manager.check_none(**kwargs)
         db.session.commit()
+    
+    @staticmethod
+    def save_auth(**kwargs):
+        db.session.commit()
 
     @staticmethod
     def update_language_filter(**kwargs):

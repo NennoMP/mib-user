@@ -11,7 +11,6 @@ def authenticate(auth):
     :return: the response 200 if credentials are correct, else 401
     """
 
-    print(auth['email'])
     user = UserManager.retrieve_by_email(auth['email'])
     response = {
         'authentication': 'failure',
@@ -19,9 +18,6 @@ def authenticate(auth):
         'user': None
     }
     response_code = 401
-
-    print(user)
-
 
     if user:
         if user.is_banned:
@@ -32,6 +28,7 @@ def authenticate(auth):
             }
             response_code = 403
         elif user.authenticate(auth['password']):
+            UserManager.save_auth()
             response['authentication'] = 'success'
             response['message'] = 'Valid credentials'
             response['user'] = user.serialize()

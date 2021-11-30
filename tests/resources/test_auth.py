@@ -51,6 +51,24 @@ class TestAuth(ViewTest):
         assert json_response["authentication"] == 'success'
         assert json_response['user'] is not None
 
+        # login banned user
+        user = self.test_user.generate_random_user()
+        psw = user.password
+        user.set_password(user.password)
+        user.is_banned = True
+        self.user_manager.create_user(user=user)
+        data = {
+            'email': user.email,
+            'password': psw
+        }
+
+        response = self.client.post('/authenticate', json=data)
+        json_response = response.json
+
+        assert response.status_code == 403
+        assert json_response["authentication"] == 'failure'
+        assert json_response['user'] is None
+
     '''
     def test_delete_user(self):
         user = self.login_test_user()

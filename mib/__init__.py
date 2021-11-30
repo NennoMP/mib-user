@@ -45,6 +45,7 @@ def create_app():
     app = api_app.app
 
     flask_env = os.getenv('FLASK_ENV', 'None')
+    flask_env = "testing"
     if flask_env == 'development':
         config_object = 'config.DevConfig'
     elif flask_env == 'testing':
@@ -79,6 +80,8 @@ def create_app():
         # we need to populate the db
         db.create_all(app=app)
 
+
+        '''
         # Create first admin user
         with app.app_context():
             q = db.session.query(User).filter(User.email == "admin@example.com")
@@ -96,7 +99,7 @@ def create_app():
                 user.set_profile_pic('mib/static/images/default.jpg')
                 user.set_admin(True)
                 UserManager.create_user(user)
-
+    '''
 
     # registering to api app all specifications
     register_specifications(api_app)
