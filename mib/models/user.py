@@ -94,6 +94,9 @@ class User(db.Model):
     def update_banned(self):
         self.is_banned = not self.is_banned
 
+    def set_logout(self):
+        self.authenticated = False
+
     # Authenticate the user
     def authenticate(self, password: str):
         checked = check_password_hash(self.password, password)

@@ -19,7 +19,9 @@ class TestActions(ViewTest):
 
         # Create a user to report
         user = self.test_user.generate_random_user()
-       
+
+        user.set_password(user.password)
+        
         self.user_manager.create_user(user=user)
         
         # Report a not existing user
@@ -49,7 +51,7 @@ class TestActions(ViewTest):
         assert response.status_code == 401
         
         # Reject an existing user
-        url = "/users/%s/unreport_user" % (self.test_user.faker.email())
+        url = "/users/%s/unreport_user" % (TestActions.faker.email())
         response = self.client.post(url, json=data)
         assert response.status_code == 404
         
@@ -61,3 +63,47 @@ class TestActions(ViewTest):
         url = "/users/%s/unreport_user" % (user.email)
         response = self.client.post(url, json=data)
         assert response.status_code == 202
+
+
+    def test_unregister(self):
+
+        # Unregister not existing user
+        user = self.test_user.generate_random_user()
+        psw = user.password
+        user.set_password(user.password)
+
+        url = "/user/%s" % (str(user.id))
+        data = {
+            'id': user.id,
+            'password': psw
+        }
+        response = self.client.post(url, json=data)
+        json_response = response.json
+        assert response.status_code == 404
+        
+        # Successfully unregistered user
+        self.user_manager.create_user(user=user)
+
+        url = "/user/%s" % (str(user.id))
+        data = {
+            'id': user.id,
+            'password': psw
+        }
+
+        response = self.client.post(url, json=data)
+        json_response = response.json
+        assert response.status_code == 202
+        assert json_response["message"] == 'Successfully unregistered'
+
+
+        # Unsuccessfully unregistered user with wrong password
+        url = "/user/%s" % (str(user.id))
+        data = {
+            'id': user.id,
+            'password':  TestActions.faker.password()
+        }
+
+        response = self.client.post(url, json=data)
+        json_response = response.json
+        assert response.status_code == 401
+        assert json_response["message"] == 'Could not unregister, inserted password does not match'
