@@ -107,7 +107,6 @@ def get_profile(user_id: int):
     """
 
     user = UserManager.retrieve_by_id(user_id)
-    print(user)
     if user is None:
         response = {'status': 'User not present'}
         return jsonify(response), 404
@@ -277,7 +276,6 @@ def update_language_filter(user_id: int):
         }
         return jsonify(response_object), 202
 
-
 def get_user_by_email(user_email: str):
     """
     Get a user by its current email.
@@ -302,7 +300,6 @@ def unregister_user(user_id: int, body):
     :return: json response
     """
 
-    user_id = body['id']
     _user = UserManager.retrieve_by_id(user_id)
     if _user is None:
         response = {'status': 'User not present'}
@@ -321,7 +318,6 @@ def unregister_user(user_id: int, body):
                 'message': 'Could not unregister, inserted password does not match',
             }
             return jsonify(response_object), 401
-
 
 def delete_user(user_id: int):
     """

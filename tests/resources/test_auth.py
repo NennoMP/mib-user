@@ -1,7 +1,7 @@
 import re
 from .view_test import ViewTest
 from faker import Faker
-#from tests.models.test_user import TestUser
+from tests.models.test_user import TestUser
 
 
 TEST_PATH_FILE      = 'mib/static/images/test.png'
@@ -22,21 +22,20 @@ class TestAuth(ViewTest):
 
     @classmethod
     def create_and_login(cls):
-        user = cls.test_user.generate_random_user()
+        user = TestUser.generate_random_user()
         cls.user_manager.create_user(user=user)
 
-        pw = user.password
+        """pw = user.password
         data = {
             'email': user.email,
             'password': pw
         }
-        cls.client.post('/authenticate', json=data)
+        cls.client.post('/authenticate', json=data)"""
 
         return user
 
-
     def create_user(self):
-        user = self.test_user.generate_random_user()
+        user = TestUser.generate_random_user()
 
         body = {
             'email': user.email,
@@ -53,10 +52,11 @@ class TestAuth(ViewTest):
         assert json_response["status"] == 'success'
         assert json_response["message"] == 'Successfully registered'
 
-    def test_user(self):
-        user = self.test_user.generate_random_user()
-
-        # Login with non-existent credentials
+    def test_login(self):
+        # login for a customer
+        user = TestUser.generate_random_user()
+        
+        # login with a wrong email
         data = {
             'email': user.email,
             'password': TestAuth.faker.password()
@@ -67,18 +67,17 @@ class TestAuth(ViewTest):
 
         assert response.status_code == 401
         assert json_response["authentication"] == 'failure'
-        assert json_response["message"] == 'Invalid credentials'
         assert json_response['user'] is None
 
-        # Login with correct credentials
-        user = self.test_user.generate_random_user()
-        pw = user.password
-        user.set_password(pw)
-        self.user_manager.create_user(user=user)
+        # login with a correct email
+        user = TestUser.generate_random_user()
+        psw = user.password
+        user.set_password(user.password)
 
+        self.user_manager.create_user(user=user)
         data = {
             'email': user.email,
-            'password': pw
+            'password': psw,
         }
 
         response = self.client.post('/authenticate', json=data)
@@ -86,19 +85,17 @@ class TestAuth(ViewTest):
 
         assert response.status_code == 200
         assert json_response["authentication"] == 'success'
-        assert json_response["message"] == 'Valid credentials'
         assert json_response['user'] is not None
 
-        # Login banned account
-        user = self.test_user.generate_random_user()
-        pw = user.password
-        user.set_password(pw)
+        # login banned user
+        user = TestUser.generate_random_user()
+        psw = user.password
+        user.set_password(user.password)
+        user.is_banned = True
         self.user_manager.create_user(user=user)
-        user.update_banned()
-
         data = {
             'email': user.email,
-            'password': pw
+            'password': psw
         }
 
         response = self.client.post('/authenticate', json=data)
@@ -110,7 +107,7 @@ class TestAuth(ViewTest):
         assert json_response['user'] is None
 
         # Ban an user: unauthorized
-        target_user = self.test_user.generate_random_user()
+        target_user = TestUser.generate_random_user()
         self.user_manager.create_user(user=target_user)
 
         url = '/users/{}/update_ban_user'.format(target_user.email)
@@ -147,12 +144,14 @@ class TestAuth(ViewTest):
         user = self.create_and_login()
         user.set_profile_pic(TEST_PATH_FILE)
 
-        """
-        # GET profile: user found
+        
+        """# GET profile: user found
         url = '/profile/{}'.format(user.id)
         response = self.client.get(url)
-        print(response.status_code)"""
+        print(response)"""
 
+        """assert response.status_code == 200
+        assert json_response["status"] == 'success'"""
         
         # Update language filter
         url = '/profile/{}/language_filter'.format(user.id)
@@ -164,10 +163,10 @@ class TestAuth(ViewTest):
         assert json_response["message"] == 'Successfully updated language filter'
 
     def test_admin(self):
-        admin = self.test_user.generate_random_user()
+        admin = TestUser.generate_random_user()
         
         # Login admin with a correct email
-        admin = self.test_user.generate_random_user()
+        admin = TestUser.generate_random_user()
         admin.set_email('admin@test.com')
         pw = 'Admin1@' 
         admin.set_password(pw)
@@ -188,7 +187,7 @@ class TestAuth(ViewTest):
         assert json_response['user'] is not None
 
         # Ban an user
-        target_user = self.test_user.generate_random_user()
+        target_user = TestUser.generate_random_user()
         self.user_manager.create_user(user=target_user)
 
         url = '/users/{}/update_ban_user'.format(target_user.email)
@@ -203,9 +202,6 @@ class TestAuth(ViewTest):
         assert json_response["message"] == 'Successfully banned'
 
         # Unban an user
-        target_user = self.test_user.generate_random_user()
-        self.user_manager.create_user(user=target_user)
-
         url = '/users/{}/update_ban_user'.format(target_user.email)
         body = {
             'src_user_id': admin.id
@@ -233,12 +229,13 @@ class TestAuth(ViewTest):
         rv = self.client.get('/user/%d' % user.id)
         assert rv.status_code == 200
 
+    '''
     def test_get_user_by_email(self):
+
         # get a non-existent user with faked email
-        rv = self.client.get('/user_email/%s' % TestUsers.faker.email())
+        rv = self.client.get('/user_email/%s' % TestUser.faker.email())
         assert rv.status_code == 404
+        user = self.create_and_login()
         # get an existent user
-        user = self.login_test_user()
         rv = self.client.get('/user_email/%s' % user.email)
         assert rv.status_code == 200
-'''
