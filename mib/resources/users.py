@@ -105,7 +105,9 @@ def get_profile(user_id: int):
     :param user_id: user id
     :return: json response
     """
+
     user = UserManager.retrieve_by_id(user_id)
+    print(user)
     if user is None:
         response = {'status': 'User not present'}
         return jsonify(response), 404
@@ -234,6 +236,9 @@ def update_profile_picture(user_id: int, body):
         }
         return jsonify(response_object), 404
     else:
+        print("PIC: ", user.profile_pic)
+        print("EMAIL: ", user.email)
+        print("NAME: ", user.first_name)
         user.set_profile_pic(save_image(user_id, body['file']))
         UserManager.update_user(user)
         response_object = {
@@ -259,8 +264,7 @@ def update_language_filter(user_id: int):
         }
         return jsonify(response_object), 404
     else:
-        user.has_language_filter = not user.has_language_filter
-        UserManager.update_user(user)
+        UserManager.update_language_filter_by_id(user.id)
         response_object = {
             'status': 'success',
             'message': 'Successfully updated language filter',

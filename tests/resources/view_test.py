@@ -18,4 +18,4 @@ class ViewTest(unittest.TestCase):
         cls.test_user = TestUser
 
         from mib.dao.user_manager import UserManager
-        cls.user_manager = UserManager()  
+        cls.user_manager = UserManager  

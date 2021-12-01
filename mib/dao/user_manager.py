@@ -21,7 +21,6 @@ class UserManager(Manager):
     @staticmethod
     def retrieve_by_email(email: str):
         Manager.check_none(email=email)
-        print(email)
         return User.query.filter(User.email == email).first()
 
     @staticmethod
@@ -36,6 +35,15 @@ class UserManager(Manager):
     def unregister_user_by_id(id_: int):
         user = UserManager.retrieve_by_id(id_)
         UserManager.unregister_user(user)
+
+    @staticmethod
+    def update_language_filter(user: User):
+        Manager.update_language_filter(user=user)
+
+    @staticmethod
+    def update_language_filter_by_id(id_: int):
+        user = UserManager.retrieve_by_id(id_)
+        UserManager.update_language_filter(user)
 
     @staticmethod
     def report_user(user: User):
