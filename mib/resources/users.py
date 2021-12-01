@@ -116,6 +116,12 @@ def get_profile(user_id: int):
 
 
 def get_users_list():
+    """
+    Get the users list
+
+    :return: json response
+    """
+
     _users = UserManager.retrieve_users_list()
     users_list = [user.serialize_profile() for user in _users]
     response_object = {

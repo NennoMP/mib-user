@@ -24,7 +24,7 @@ class TestUser(ModelTest):
         t.assertEqual(value.is_active, expected.is_active)
         t.assertEqual(value.authenticated, False)
 
-    @staticmethod
+    
     def generate_random_user():
         email = TestUser.faker.email()
         password = TestUser.faker.password()
@@ -122,4 +122,19 @@ class TestUser(ModelTest):
 
     def test_is_authenticated(self):
         user = TestUser.generate_random_user()
-        self.assertFalse(user.is_authenticated())
+        user.authenticated=1
+        self.assertTrue(user.is_authenticated())
+
+    def test_set_active(self):
+        user = TestUser.generate_random_user()
+        self.assertTrue(user.is_active)
+
+        user.set_active(False)
+        self.assertFalse(user.is_active)
+
+    def test_set_reported(self):
+        user = TestUser.generate_random_user()
+        self.assertFalse(user.is_reported)
+
+        user.set_reported(True)
+        self.assertTrue(user.is_reported)

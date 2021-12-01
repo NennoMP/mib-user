@@ -20,6 +20,7 @@ class TestUserManager(DaoTest):
             self.user_manager.create_user(user=user)
             user1 = self.user_manager.retrieve_by_id(user.id)
             self.test_user.assertUserEquals(user1, user)
+
             user.set_password(self.faker.password())
             user.email = self.faker.email()
             self.user_manager.update_user(user=user)
@@ -70,3 +71,20 @@ class TestUserManager(DaoTest):
             self.user_manager.delete_user(user=base_user)
             
 
+    def test_actions(self):
+        user = self.test_user.generate_random_user()
+        self.user_manager.create_user(user=user)
+        self.user_manager.unregister_user_by_id(user.id)
+        user1 = self.user_manager.retrieve_by_id(user.id)
+        self.assertEquals(user1.is_active, 0)
+
+
+        user = self.test_user.generate_random_user()
+        self.user_manager.create_user(user=user)
+        self.user_manager.report_user_by_email(user.email)
+        user1 = self.user_manager.retrieve_by_id(user.id)
+        self.assertEquals(user1.is_reported, 1)
+
+        self.user_manager.unreport_user_by_email(user.email)
+        user2 = self.user_manager.retrieve_by_id(user.id)
+        self.assertEqual(user2.is_reported, 0)

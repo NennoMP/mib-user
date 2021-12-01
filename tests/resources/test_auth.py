@@ -144,20 +144,6 @@ class TestAuth(ViewTest):
         assert json_response["status"] == 'failed'
         assert json_response["message"] == 'Could not update language filter, user not found'
 
-        # Update profile picture: user not found
-        url = '/profile/{}/profile_picture'.format(fake_id)
-        body = {
-            'format': '.jpg',
-            'file': TEST_BINARY_FILE,
-        }
-        response = self.client.post(url, json=body)
-        json_response = response.json
-
-        assert response.status_code == 404
-        assert json_response["status"] == 'failed'
-        assert json_response["message"] == 'Could not update the profile picture, user not found'
-
-
         user = self.create_and_login()
         user.set_profile_pic(TEST_PATH_FILE)
 
@@ -176,28 +162,6 @@ class TestAuth(ViewTest):
         assert response.status_code == 202
         assert json_response["status"] == 'success'
         assert json_response["message"] == 'Successfully updated language filter'
-
-        
-        """# Update profile picture
-        url = '/profile/{}/profile_picture'.format(user.id)
-        body = {
-            'format': 'png',
-            'file': TEST_BINARY_FILE
-        }
-        print("PIC: ", user.profile_pic)
-        print("EMAIL: ", user.email)
-        print("NAME: ", user.first_name)
-        user.set_email('ahah')
-        user.set_first_name("SOP")
-        print("PIC: ", user.profile_pic)
-        print("EMAIL: ", user.email)
-        print("NAME: ", user.first_name)
-        response = self.client.post(url, json=body)
-        json_response = response.json
-
-        assert response.status_code == 202
-        assert json_response["status"] == 'success'
-        assert json_response["message"] == 'Profile picture updated'"""
 
     def test_admin(self):
         admin = self.test_user.generate_random_user()

@@ -303,6 +303,39 @@ paths:
                   error_message:
                     type: string        
 
+  /logout:
+      post:
+        summary: Logout a user
+        tags: [ Users ]
+        operationId: mib.resources.auth.logout
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                x-body-name: auth
+                type: object
+                required:
+                  - email
+                properties:
+                  email:
+                    type: string
+                    format: email
+                    example: user@studenti.unipi.it
+        responses:
+          200:
+            description: Logout correct
+          default:
+            description: An error occured during login
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error_message:
+                      type: string        
+
+
   /users/:
     get:
       tags: [ User ]
