@@ -18,7 +18,44 @@ class TestAuth(ViewTest):
         super(TestAuth, cls).setUpClass()
 
     
+    def test_logout(self):
+        # login with a correct email
+        user = TestUser.generate_random_user()
+        psw = user.password
+        user.set_password(user.password)
+
+        self.user_manager.create_user(user=user)
+        data = {
+            'email': user.email,
+            'password': psw,
+        }
+
+        self.client.post('/authenticate', json=data)
+        data = {
+            'email': user.email
+        }
+
+        response = self.client.post('/logout', json=data)
+        assert response.status_code == 200
+        json_response = response.json
+        assert json_response["authentication"] == 'success'
+        assert json_response["message"] == 'Successfully logout'
+
+        data = {
+            'email': 'fake@email'
+        }
+
+        response = self.client.post('/logout', json=data)
+        assert response.status_code == 404
+        json_response = response.json
+        assert json_response["authentication"] == 'failed'
+        assert json_response["message"] == 'Failed logout'
+
+
     
+
+
+
     def test_login(self):
         # login for a customer
         user = TestUser.generate_random_user()
@@ -87,6 +124,26 @@ class TestAuth(ViewTest):
         assert response.status_code == 401
         assert json_response["status"] == 'Failed'
         assert json_response["message"] == 'Unauthorized action'
+
+        # login unregistered user
+        user = TestUser.generate_random_user()
+        psw = user.password
+        user.set_password(user.password)
+        user.is_active = False
+        self.user_manager.create_user(user=user)
+        data = {
+            'email': user.email,
+            'password': psw
+        }
+
+        response = self.client.post('/authenticate', json=data)
+        json_response = response.json
+
+        assert response.status_code == 401
+        assert json_response["authentication"] == 'failure'
+        assert json_response["message"] == 'Your account is no longer active!'
+        assert json_response['user'] is None
+
 
     def test_admin(self):
         admin = TestUser.generate_random_user()

@@ -56,7 +56,7 @@ def logout(auth):
    
     if user is not None:
         response = {
-            'logout': 'success',
+            'authentication': 'success',
             'message': 'Successfully logout'
         }
         user.set_logout()
@@ -64,7 +64,7 @@ def logout(auth):
         return jsonify(response), 200
     else:
         response = {
-            'logout': 'failed',
+            'authentication': 'failed',
             'message': 'Failed logout'
             
         }
