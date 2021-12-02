@@ -169,6 +169,18 @@ class TestAuth(ViewTest):
         assert json_response["message"] == 'Valid credentials'
         assert json_response['user'] is not None
 
+        # Ban unexistent user
+        fake_id = 999
+        url = '/users/{}/update_ban_user'.format(fake_id)
+        body = {
+            'user_id': admin.id
+        }
+        response = self.client.post(url, json=body)
+        json_response = response.json
+
+        assert response.status_code == 404
+        assert json_response["status"] == 'User not present'
+
         # Ban an user
         target_user = TestUser.generate_random_user()
         self.user_manager.create_user(user=target_user)

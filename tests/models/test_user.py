@@ -32,7 +32,7 @@ class TestUser(ModelTest):
         last_name = TestUser.faker.last_name()
         location = TestUser.faker.city()
         date_of_birth = TestUser.faker.date_of_birth()
-        profile_pic = TestUser.faker.file_path()
+        profile_pic = 'mib/static/images/test.png'
 
         is_active = True
         is_admin = False

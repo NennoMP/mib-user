@@ -85,12 +85,3 @@ class UserManager(Manager):
         UserManager.update_ban_user(user)
 
         return response_object
-    
-    @staticmethod
-    def delete_user(user: User):
-        Manager.delete(user=user)
-
-    @staticmethod
-    def delete_user_by_id(id_: int):
-        user = UserManager.retrieve_by_id(id_)
-        UserManager.delete_user(user)

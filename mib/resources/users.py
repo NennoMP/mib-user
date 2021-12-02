@@ -302,18 +302,3 @@ def unregister_user(user_id: int, body):
                 'message': 'Could not unregister, inserted password does not match',
             }
             return jsonify(response_object), 401
-
-def delete_user(user_id: int):
-    """
-    Delete the user with id = user_id.
-
-    :param user_id the id of user to be deleted
-    :return json response
-    """
-    UserManager.delete_user_by_id(user_id)
-    response_object = {
-        'status': 'success',
-        'message': 'Successfully deleted',
-    }
-
-    return jsonify(response_object), 202

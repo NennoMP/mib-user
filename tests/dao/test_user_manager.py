@@ -26,7 +26,6 @@ class TestUserManager(DaoTest):
             self.user_manager.update_user(user=user)
             user1 = self.user_manager.retrieve_by_id(user.id)
             self.test_user.assertUserEquals(user1, user)
-            self.user_manager.delete_user(user=user)
 
     def test_retrieved_by_email(self):
         for _ in range(0, 10):
@@ -34,7 +33,6 @@ class TestUserManager(DaoTest):
             self.user_manager.create_user(user=base_user)
             retrieved_user = self.user_manager.retrieve_by_email(email=base_user.email)
             self.test_user.assertUserEquals(base_user, retrieved_user)
-            self.user_manager.delete_user(user=base_user)
 
     def test_update_language_filter(self):
         for _ in range(0, 10):
@@ -51,8 +49,6 @@ class TestUserManager(DaoTest):
             self.user_manager.update_language_filter_by_id(base_user.id)
             self.assertEqual(has_language_filter, not base_user.has_language_filter)
 
-            self.user_manager.delete_user(user=base_user)
-
     def test_update_ban_user(self):
         for _ in range(0, 10):
             base_user = self.test_user.generate_random_user()
@@ -67,8 +63,6 @@ class TestUserManager(DaoTest):
             is_banned = base_user.is_banned
             self.user_manager.update_ban_user_by_id(id=base_user.id)
             self.assertEqual(is_banned, not base_user.is_banned)
-
-            self.user_manager.delete_user(user=base_user)
             
 
     def test_actions(self):

@@ -1,3 +1,4 @@
+import re
 from .view_test import ViewTest
 from faker import Faker
 from tests.models.test_user import TestUser
@@ -68,25 +69,27 @@ class TestActions(ViewTest):
     def test_unregister(self):
 
         # Unregister not existing user
-        user = self.test_user.generate_random_user()
-        psw = user.password
-        user.set_password(user.password)
+        fake_id = 999
+        fake_psw = 'fake'
 
-        url = "/user/%s" % (str(user.id))
+        url = "/user/{}".format(fake_id)
         data = {
-            'id': user.id,
-            'password': psw
+            'password': fake_psw
         }
-        response = self.client.post(url, json=data)
+        response = self.client.post(url, json=data) 
         json_response = response.json
+
         assert response.status_code == 404
+        assert json_response['status'] == 'User not present'
         
         # Successfully unregistered user
+        user = TestUser.generate_random_user()
+        psw = user.password
+        user.set_password(user.password)
         self.user_manager.create_user(user=user)
 
         url = "/user/%s" % (str(user.id))
         data = {
-            'id': user.id,
             'password': psw
         }
 
@@ -95,11 +98,9 @@ class TestActions(ViewTest):
         assert response.status_code == 202
         assert json_response["message"] == 'Successfully unregistered'
 
-
         # Unsuccessfully unregistered user with wrong password
         url = "/user/%s" % (str(user.id))
         data = {
-            'id': user.id,
             'password':  TestActions.faker.password()
         }
 
