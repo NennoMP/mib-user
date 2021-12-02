@@ -122,7 +122,7 @@ def get_users_list():
     """
 
     _users = UserManager.retrieve_users_list()
-    users_list = [user.serialize_profile() for user in _users]
+    users_list = [user.serialize_profile() for user in _users if user.is_active]
     response_object = {
         'users_list': users_list,
         'status': 'success'
