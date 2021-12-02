@@ -25,12 +25,12 @@ class TestActions(ViewTest):
         self.user_manager.create_user(user=user)
         
         # Report a not existing user
-        url = "/users/%s/report_user" % (self.test_user.faker.email())
+        url = "/users/-1/report_user"
         response = self.client.post(url)
         assert response.status_code == 404
 
         # Report an existing user
-        url = "/users/%s/report_user" % (user.email)
+        url = "/users/%s/report_user" % (user.id)
         response = self.client.post(url)
         assert response.status_code == 202
 
@@ -43,24 +43,24 @@ class TestActions(ViewTest):
         # Failing attempt to reject a user.
         # Only admin is authorized.
         data = {
-            'src_user_id': user.id,
+            'user_id': user.id,
         }
 
-        url = "/users/%s/unreport_user" % (user.email)
+        url = "/users/%s/unreport_user" % (user.id)
         response = self.client.post(url, json=data)
         assert response.status_code == 401
         
-        # Reject an existing user
-        url = "/users/%s/unreport_user" % (TestActions.faker.email())
+        # Reject a not existing user
+        url = "/users/-1/unreport_user"
         response = self.client.post(url, json=data)
         assert response.status_code == 404
         
         # Successfully reject user by admin
         data = {
-            'src_user_id': admin.id,
+            'user_id': admin.id,
         }
     
-        url = "/users/%s/unreport_user" % (user.email)
+        url = "/users/%s/unreport_user" % (user.id)
         response = self.client.post(url, json=data)
         assert response.status_code == 202
 

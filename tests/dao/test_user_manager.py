@@ -60,12 +60,12 @@ class TestUserManager(DaoTest):
 
             # update ban bool -> not bool = bool1
             is_banned = base_user.is_banned
-            self.user_manager.update_ban_user_by_email(email=base_user.email)
+            self.user_manager.update_ban_user_by_id(id=base_user.id)
             self.assertEqual(is_banned, not base_user.is_banned)
             
             # update ban bool1 -> not bool1 = bool
             is_banned = base_user.is_banned
-            self.user_manager.update_ban_user_by_email(email=base_user.email)
+            self.user_manager.update_ban_user_by_id(id=base_user.id)
             self.assertEqual(is_banned, not base_user.is_banned)
 
             self.user_manager.delete_user(user=base_user)
@@ -81,10 +81,10 @@ class TestUserManager(DaoTest):
 
         user = self.test_user.generate_random_user()
         self.user_manager.create_user(user=user)
-        self.user_manager.report_user_by_email(user.email)
+        self.user_manager.report_user_by_id(user.id)
         user1 = self.user_manager.retrieve_by_id(user.id)
         self.assertEquals(user1.is_reported, 1)
 
-        self.user_manager.unreport_user_by_email(user.email)
+        self.user_manager.unreport_user_by_id(user.id)
         user2 = self.user_manager.retrieve_by_id(user.id)
         self.assertEqual(user2.is_reported, 0)
