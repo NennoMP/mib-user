@@ -20,16 +20,22 @@ def authenticate(auth):
     response_code = 401
 
     if user:
-        if user.is_banned:
-            if user.authenticate(auth['password']):
+        if user.authenticate(auth['password']):
+            if not user.is_active:
+                response = {
+                    'authentication': 'failure',
+                    'message': 'Your account is no longer active!',
+                    'user': None
+                }
+                response_code = 401
+            elif user.is_banned:
                 response = {
                     'authentication': 'failure',
                     'message': 'Your account has been banned!',
                     'user': None
                 }
                 response_code = 403
-        else:
-            if user.authenticate(auth['password']):
+            else:
                 response['authentication'] = 'success'
                 response['message'] = 'Valid credentials'
                 response['user'] = user.serialize()
@@ -53,10 +59,9 @@ def logout(auth):
             'logout': 'success',
             'message': 'Successfully logout'
         }
-        response_code = 200
         user.set_logout()
         UserManager.save_auth()
-        return jsonify(response), response_code
+        return jsonify(response), 200
     else:
         response = {
             'logout': 'failed',

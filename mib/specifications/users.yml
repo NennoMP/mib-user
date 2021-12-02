@@ -279,7 +279,7 @@ paths:
                     description: "It can be failure or success"
                     default: 'failure'
         403:
-          description: User account has been banned
+          description: User account has been banned or is inactive
           content:
             application/json:
               schema:
@@ -343,18 +343,19 @@ paths:
         default:
           description: An error occured during retrieving the user
   
-  /users/<user_email>/report_user:
+  /users/<target_id>/report_user:
     post:
       tags: [ User ]
-      description: Report an user by its email
+      description: Report an user by its id
       operationId: mib.resources.users.report_user
       parameters:
-        - name: user_email
-          description: User Unique Email
+        - name: target_id
+          description: User Unique ID
           in: path
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         202:
           description: User reported
@@ -363,18 +364,19 @@ paths:
         default:
           description: An error occured during the report of the user
 
-  /users/<dest_user_email>/unreport_user:
+  /users/<target_id>/unreport_user:
     post:
       tags: [ User ]
-      description: Unreport an user by its email
+      description: Unreport an user by its id
       operationId: mib.resources.users.unreport_user
       parameters:
-        - name: dest_user_email
-          description: Target User Unique Email
+        - name: target_id
+          description: Target User Unique ID
           in: path
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       requestBody:
         required: true
         content:
@@ -383,7 +385,7 @@ paths:
               x-body-name: body
               type: object
               required:
-                - src_user_id
+                - user_id
               properties:
                 id:
                   type: integer
@@ -398,51 +400,19 @@ paths:
         default:
           description: An error occured during the unreport of the user
 
-  /users/<dest_user_email>/update_block_user:
+  /users/<target_id>/update_ban_user:
     post:
       tags: [ User ]
-      description: (Un)Block an user by its email
-      operationId: mib.resources.users.update_block_user
-      parameters:
-        - name: dest_user_email
-          description: User Unique Email
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              x-body-name: body
-              type: object
-              required:
-                - src_user_id
-              properties:
-                id:
-                  type: integer
-                  format: int64
-      responses:
-        202:
-          description: User (un)blocked
-        404:
-          description: User not found
-        default:
-          description: An error occured during the (un)block of the user
-
-  /users/<dest_user_email>/update_ban_user:
-    post:
-      tags: [ User ]
-      description: (Un)Ban an user by its email
+      description: (Un)Ban an user by its id
       operationId: mib.resources.users.update_ban_user
       parameters:
-        - name: dest_user_email
-          description: Target User Unique Email
+        - name: target_id
+          description: Target User Unique ID
           in: path
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       requestBody:
         required: true
         content:
@@ -451,7 +421,7 @@ paths:
               x-body-name: body
               type: object
               required:
-                - src_user_id
+                - user_id
               properties:
                 id:
                   type: integer

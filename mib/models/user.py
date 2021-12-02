@@ -121,8 +121,6 @@ class User(db.Model):
         for k in self.SERIALIZE_PROFILE_LIST:
             dict[k] = self.__getattribute__(k)
         
-        print("PIC: ", dict['profile_pic'])
         dict['profile_pic'] = image_to_base64(dict['profile_pic'])
         
-        print("TEST")
         return dict

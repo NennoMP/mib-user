@@ -50,8 +50,8 @@ class UserManager(Manager):
         Manager.report(user=user)
 
     @staticmethod
-    def report_user_by_email(email: str):
-        user = UserManager.retrieve_by_email(email)
+    def report_user_by_id(id: int):
+        user = UserManager.retrieve_by_id(id)
         UserManager.report_user(user)
 
     @staticmethod
@@ -59,27 +59,17 @@ class UserManager(Manager):
         Manager.unreport(user=user)
 
     @staticmethod
-    def unreport_user_by_email(email: str):
-        user = UserManager.retrieve_by_email(email)
+    def unreport_user_by_id(id: int):
+        user = UserManager.retrieve_by_id(id)
         UserManager.unreport_user(user)
-
-    """@staticmethod
-    def update_block_user(user: User):
-        Manager.update_block(user=user)
-
-    @staticmethod
-    def update_block_user_by_id(id_: int):
-        user = UserManager.retrieve_by_id(id_)
-        UserManager.update_block_user(user)
-    """
 
     @staticmethod
     def update_ban_user(user: User):
         Manager.update_ban(user=user)
 
     @staticmethod
-    def update_ban_user_by_email(email: str):
-        user = UserManager.retrieve_by_email(email)
+    def update_ban_user_by_id(id: int):
+        user = UserManager.retrieve_by_id(id)
 
         if user.is_banned:
             response_object = {

@@ -130,7 +130,7 @@ def get_users_list():
     return jsonify(response_object), 200
 
 
-def report_user(user_email: str):
+def report_user(target_id: int):
     """
     Report an user by its current email.
 
@@ -138,13 +138,13 @@ def report_user(user_email: str):
     :return: json response
     """
 
-    _user = UserManager.retrieve_by_email(user_email)
+    _user = UserManager.retrieve_by_id(target_id)
     if _user is None:
         response = {'status': 'User not present'}
         return jsonify(response), 404
     else:
         if not _user.is_reported:
-            UserManager.report_user_by_email(user_email)
+            UserManager.report_user_by_id(target_id)
         response_object = {
             'status': 'Success',
             'message': 'Successfully reported'
@@ -152,7 +152,7 @@ def report_user(user_email: str):
         return jsonify(response_object), 202
 
 
-def unreport_user(dest_user_email: str, body):
+def unreport_user(target_id: int, body):
     """
     Unreport an user by its current email.
 
@@ -160,16 +160,16 @@ def unreport_user(dest_user_email: str, body):
     :return: json response
     """
 
-    src_user_id = body['src_user_id']
+    user_id = body['user_id']
 
-    dest_user = UserManager.retrieve_by_email(dest_user_email)
-    src_user = UserManager.retrieve_by_id(src_user_id)
-    if dest_user is None:
+    target_user = UserManager.retrieve_by_id(target_id)
+    _user = UserManager.retrieve_by_id(user_id)
+    if target_user is None:
         response = {'status': 'User not present'}
         return jsonify(response), 404
     else:
-        if src_user.is_admin:
-            UserManager.unreport_user_by_email(dest_user_email)
+        if _user.is_admin:
+            UserManager.unreport_user_by_id(target_id)
             response_object = {
                 'status': 'Success',
                 'message': 'Successfully unreported'
@@ -183,20 +183,7 @@ def unreport_user(dest_user_email: str, body):
             return jsonify(response_object), 401
 
 
-
-
-def update_block_user(dest_user_id: int, body):
-    """
-    (Un)Block an user by its current id.
-
-    :param dest_user_id: id of target user
-    :return: json response
-    """
-    # TODO: need blocklist table and microservice
-    pass
-
-
-def update_ban_user(dest_user_email: str, body):
+def update_ban_user(target_id: int, body):
     """
     (Un)Ban an user by its current email.
 
@@ -204,16 +191,16 @@ def update_ban_user(dest_user_email: str, body):
     :return: json response
     """
 
-    src_user_id = body['src_user_id']
+    user_id = body['user_id']
 
-    dest_user = UserManager.retrieve_by_email(dest_user_email)
-    src_user = UserManager.retrieve_by_id(src_user_id)
-    if dest_user is None:
+    target_user = UserManager.retrieve_by_id(target_id)
+    _user = UserManager.retrieve_by_id(user_id)
+    if target_user is None:
         response = {'status': 'User not present'}
         return jsonify(response), 404
     else:
-        if src_user.is_admin:
-            response_object = UserManager.update_ban_user_by_email(dest_user_email)
+        if _user.is_admin:
+            response_object = UserManager.update_ban_user_by_id(target_id)
             return jsonify(response_object), 202
         else:
             response_object = {
@@ -241,9 +228,6 @@ def update_profile_picture(user_id: int, body):
         }
         return jsonify(response_object), 404
     else:
-        print("PIC: ", user.profile_pic)
-        print("EMAIL: ", user.email)
-        print("NAME: ", user.first_name)
         user.set_profile_pic(save_image(user_id, body['file']))
         UserManager.update_user(user)
         response_object = {
