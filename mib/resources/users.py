@@ -9,7 +9,13 @@ from ..utils import save_image, allowed_email
 
 
 def create_user():
-    """This method allows the creation of a new user."""
+    """
+    This method allows the creation of a new user.
+    
+    :return: json response and status code
+        - 201: successfully created
+        - 403: chosen email already exists
+    """
 
     post_data = request.get_json()
     email = post_data.get('email')
@@ -23,8 +29,9 @@ def create_user():
         }), 403
 
     user = User()
-    date_of_birth = datetime.datetime.strptime(post_data.get('date_of_birth'),
-                                          '%Y-%m-%d')
+    date_of_birth = datetime.datetime.strptime(
+                                        post_data.get('date_of_birth'),'%Y-%m-%d'
+                                    )
     user.set_email(email)
     user.set_password(password)
     user.set_first_name(post_data.get('firstname'))
@@ -43,11 +50,91 @@ def create_user():
     return jsonify(response_object), 201
 
 
-def update_profile(user_id: int, body):
-    """This method allows the update of a user profile by its current id."""
-    
-    user = UserManager.retrieve_by_id(user_id)
+def get_user(user_id: int):
+    """
+    Get a user by its current id.
+
+    :param user_id: user id
+    :return: json response and status code
+        - 200: retrieved user
+        - 404: user not found
+    """
+
+    _user = UserManager.retrieve_by_id(user_id)
+    if _user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+
+    return jsonify(_user.serialize()), 200
+
+
+def get_user_by_email(user_email: str):
+    """
+    Get a user by its current email.
+
+    :param user_email: user email
+    :return: json response and status code
+        - 200: user found
+        - 404: user not found
+    """
+
+    user = UserManager.retrieve_by_email(user_email)
     if user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+
+    return jsonify(user.serialize()), 200
+
+
+def get_users_list():
+    """
+    Get the users list
+
+    :return: json response and status code
+        - 200: retrieved users list
+    """
+
+    _users = UserManager.retrieve_users_list()
+
+    users_list = [user.serialize_profile() for user in _users if user.is_active]
+    response_object = {
+        'users_list': users_list,
+        'status': 'success'
+    }
+    return jsonify(response_object), 200
+
+
+def get_profile(user_id: int):
+    """
+    Get the user profile by its current id.
+
+    :param user_id: user id
+    :return: json response and status code
+        - 200: retrieved profile information
+        - 404: user not found
+    """
+
+    _user = UserManager.retrieve_by_id(user_id)
+    if _user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+
+    return jsonify(_user.serialize_profile()), 200
+
+
+def update_profile(user_id: int, body):
+    """
+    This method allows the update of a user profile by its current id.
+    
+    :param user_id: user id
+    :param body: dict with email, firstname, lastname and location keys
+    :return: json response and status code
+        - 200: successfully updated
+        - 409: incorrect email format OR email already exists
+    """
+    
+    _user = UserManager.retrieve_by_id(user_id)
+    if _user is None:
         return jsonify({
             'status': 'Not found'
         }), 404
@@ -57,9 +144,8 @@ def update_profile(user_id: int, body):
             'status': 'not success',
             'message': 'Incorrect email format'
         }), 409
-
     
-    if user.email != body['email']:
+    if _user.email != body['email']:
         exist_user = UserManager.retrieve_by_email(body['email'])
         if exist_user is not None:
             return jsonify({
@@ -67,14 +153,14 @@ def update_profile(user_id: int, body):
                 'message': 'Email already exists'
             }), 409
 
-    user.set_email(body['email'])
-    user.set_first_name(body['firstname'])
-    user.set_last_name(body['lastname'])
-    user.set_location(body['location'])
-    UserManager.update_user(user)
+    _user.set_email(body['email'])
+    _user.set_first_name(body['firstname'])
+    _user.set_last_name(body['lastname'])
+    _user.set_location(body['location'])
+    UserManager.update_user(_user)
 
     response_object = {
-        'user': user.serialize(),
+        'user': _user.serialize(),
         'status': 'success',
         'message': 'Successfully updated',
     }
@@ -82,142 +168,15 @@ def update_profile(user_id: int, body):
     return jsonify(response_object), 200
 
 
-def get_user(user_id: int):
-    """
-    Get a user by its current id.
-
-    :param user_id: user id
-    :return: json response
-    """
-
-    user = UserManager.retrieve_by_id(user_id)
-    if user is None:
-        response = {'status': 'User not present'}
-        return jsonify(response), 404
-
-    return jsonify(user.serialize()), 200
-
-
-def get_profile(user_id: int):
-    """
-    Get the user profile by its current id.
-
-    :param user_id: user id
-    :return: json response
-    """
-
-    user = UserManager.retrieve_by_id(user_id)
-    if user is None:
-        response = {'status': 'User not present'}
-        return jsonify(response), 404
-
-    return jsonify(user.serialize_profile()), 200
-
-
-def get_users_list():
-    """
-    Get the users list
-
-    :return: json response
-    """
-
-    _users = UserManager.retrieve_users_list()
-    users_list = [user.serialize_profile() for user in _users if user.is_active]
-    response_object = {
-        'users_list': users_list,
-        'status': 'success'
-    }
-    return jsonify(response_object), 200
-
-
-def report_user(target_id: int):
-    """
-    Report an user by its current email.
-
-    :param user_id: id of target user
-    :return: json response
-    """
-
-    _user = UserManager.retrieve_by_id(target_id)
-    if _user is None:
-        response = {'status': 'User not present'}
-        return jsonify(response), 404
-    else:
-        if not _user.is_reported:
-            UserManager.report_user_by_id(target_id)
-        response_object = {
-            'status': 'Success',
-            'message': 'Successfully reported'
-        }
-        return jsonify(response_object), 202
-
-
-def unreport_user(target_id: int, body):
-    """
-    Unreport an user by its current email.
-
-    :param user_email: email of target user
-    :return: json response
-    """
-
-    user_id = body['user_id']
-
-    target_user = UserManager.retrieve_by_id(target_id)
-    _user = UserManager.retrieve_by_id(user_id)
-    if target_user is None:
-        response = {'status': 'User not present'}
-        return jsonify(response), 404
-    else:
-        if _user.is_admin:
-            UserManager.unreport_user_by_id(target_id)
-            response_object = {
-                'status': 'Success',
-                'message': 'Successfully unreported'
-            }
-            return jsonify(response_object), 202
-        else:
-            response_object = {
-                'status': 'Failed',
-                'message': 'Unauthorized action'
-            }
-            return jsonify(response_object), 401
-
-
-def update_ban_user(target_id: int, body):
-    """
-    (Un)Ban an user by its current email.
-
-    :param user_email: email of the target user
-    :return: json response
-    """
-
-    user_id = body['user_id']
-
-    target_user = UserManager.retrieve_by_id(target_id)
-    _user = UserManager.retrieve_by_id(user_id)
-    if target_user is None:
-        response = {'status': 'User not present'}
-        return jsonify(response), 404
-    else:
-        if _user.is_admin:
-            response_object = UserManager.update_ban_user_by_id(target_id)
-            return jsonify(response_object), 202
-        else:
-            response_object = {
-            'status': 'Failed',
-            'message': 'Unauthorized action'
-            }
-            return jsonify(response_object), 401
-            
-
-
 def update_profile_picture(user_id: int, body):
     """
     Update the profile picture of the user by its current id.
 
     :param user_id: user id
-    :param body: dict that contains the file uploaded
-    :return: json response
+    :param body: dict with <format> and <file> keys, the format and the binary of the file
+    :return: json response and status code
+        - 202: successfully updated
+        - 404: user not gound
     """
 
     user = UserManager.retrieve_by_id(user_id)
@@ -242,7 +201,9 @@ def update_language_filter(user_id: int):
     Update the language filter of the user by its current id.
 
     :param user_id: user id
-    :return: json response
+    :return: json response and status code
+        - 202: successfully updated
+        - 404: user not gound
     """
 
     user = UserManager.retrieve_by_id(user_id)
@@ -260,28 +221,106 @@ def update_language_filter(user_id: int):
         }
         return jsonify(response_object), 202
 
-def get_user_by_email(user_email: str):
-    """
-    Get a user by its current email.
 
-    :param user_email: user email
-    :return: json response
+def report_user(target_id: int):
+    """
+    Report an user by its current email.
+
+    :param user_id: id of target user
+    :return: json response and status code
+        - 202: successfully reported
+        - 404: user not found
     """
 
-    user = UserManager.retrieve_by_email(user_email)
-    if user is None:
+    _user = UserManager.retrieve_by_id(target_id)
+    if _user is None:
         response = {'status': 'User not present'}
         return jsonify(response), 404
+    else:
+        if not _user.is_reported:
+            UserManager.report_user_by_id(target_id)
+        response_object = {
+            'status': 'Success',
+            'message': 'Successfully reported'
+        }
+        return jsonify(response_object), 202
 
-    return jsonify(user.serialize()), 200
+def unreport_user(target_id: int, body):
+    """
+    Unreport an user by its current email.
+
+    :param user_email: email of target user
+    :param body: dict with <user_id> key, id of the user reporting
+    :return: json response and statys code
+        - 202: successfully unreported
+        - 401: unauthorized
+        - 404: user not found
+    """
+
+    user_id = body['user_id']
+
+    _user = UserManager.retrieve_by_id(user_id)
+    target_user = UserManager.retrieve_by_id(target_id)
+    if target_user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+    else:
+        if _user.is_admin:
+            UserManager.unreport_user_by_id(target_id)
+            response_object = {
+                'status': 'Success',
+                'message': 'Successfully unreported'
+            }
+            return jsonify(response_object), 202
+        else:
+            response_object = {
+                'status': 'Failed',
+                'message': 'Unauthorized action'
+            }
+            return jsonify(response_object), 401
+
+
+def update_ban_user(target_id: int, body):
+    """
+    (Un)Ban an user by its current email.
+
+    :param user_email: email of the target user
+    :param body: dict with <user_email>, the email of the admin banning
+    :return: json response and status code
+        - 202: successfully updated ban status
+        - 401: unauthorized
+        - 404: user not found
+    """
+
+    user_id = body['user_id']
+
+    _user = UserManager.retrieve_by_id(user_id)
+    target_user = UserManager.retrieve_by_id(target_id)
+    if target_user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+    else:
+        if _user.is_admin:
+            response_object = UserManager.update_ban_user_by_id(target_id)
+            return jsonify(response_object), 202
+        else:
+            response_object = {
+            'status': 'Failed',
+            'message': 'Unauthorized action'
+            }
+            return jsonify(response_object), 401
+
 
 def unregister_user(user_id: int, body):
     """
-    Unregister an user by its current id if the password macthes.
+    Unregister an user by its current id if the inserted password matches.
 
     :param user_id: user id
-    :param body: dictionary that contains the password inserted in the unregister form
-    :return: json response
+    :param body: dict with the <password> key
+    :return: json response and statys code
+        - 202: successfully unregistered
+        - 401: incorrect password
+        - 404: user not found
     """
 
     _user = UserManager.retrieve_by_id(user_id)

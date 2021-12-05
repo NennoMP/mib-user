@@ -1,37 +1,36 @@
-from io import BytesIO
+import os
 import base64
+
+from io import BytesIO
+
 from PIL import Image
 
-import os
-from werkzeug.utils import secure_filename
-
-# UTILS FOR FORM CHECKS
+# Utils for form checks
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-ALLOWED_EMAILS = {'@test.com',
-                  '@test.it',
-                  '@example.com',
-                  '@example.it',
-                  '@hotmail.com',
-                  '@hotmail.it',
-                  '@outlook.com',
-                  '@outlook.it',
-                  '@gmail.com',
-                  '@gmail.it',
-                  '@yahoo.com',
-                  '@yahoo.it',
-                  '@studenti.unipi.it',
-                  '@di.unipi.it'
-}
+ALLOWED_EMAILS = {
+                '@test.com',
+                '@test.it',
+                '@example.com',
+                '@example.it',
+                '@hotmail.com',
+                '@hotmail.it',
+                '@outlook.com',
+                '@outlook.it',
+                '@gmail.com',
+                '@gmail.it',
+                '@yahoo.com',
+                '@yahoo.it',
+                '@studenti.unipi.it',
+                '@di.unipi.it'
+            }
 
 
 def save_image(user_id: int, file: str):
     """Utility function for saving a new profile picture."""
 
-
-
-    filename = 'mib/static/images/user_' + str(user_id) + ".png"
+    filename = f'mib/static/images/user_{user_id}.png'
     with open(filename, "wb") as outf:
-        # convert from string to base64 binary and saves the image
+        # Convert from string to base64 binary and saves the image
         outf.write(base64.b64decode(bytes(file, 'UTF-8')))
         
     return filename

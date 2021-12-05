@@ -4,6 +4,8 @@ from .dao_test import DaoTest
 
 
 class TestUserManager(DaoTest):
+    """Tests for the UserManager methods."""
+
     faker = Faker()
 
     @classmethod
@@ -14,6 +16,7 @@ class TestUserManager(DaoTest):
         from mib.dao import user_manager
         cls.user_manager = user_manager.UserManager
 
+    # Test crud
     def test_crud(self):
         for _ in range(0, 10):
             user = self.test_user.generate_random_user()
@@ -27,6 +30,7 @@ class TestUserManager(DaoTest):
             user1 = self.user_manager.retrieve_by_id(user.id)
             self.test_user.assertUserEquals(user1, user)
 
+    # Retrieve user by email
     def test_retrieved_by_email(self):
         for _ in range(0, 10):
             base_user = self.test_user.generate_random_user()
@@ -34,6 +38,7 @@ class TestUserManager(DaoTest):
             retrieved_user = self.user_manager.retrieve_by_email(email=base_user.email)
             self.test_user.assertUserEquals(base_user, retrieved_user)
 
+    # Update language filter
     def test_update_language_filter(self):
         for _ in range(0, 10):
             base_user = self.test_user.generate_random_user()
@@ -49,6 +54,7 @@ class TestUserManager(DaoTest):
             self.user_manager.update_language_filter_by_id(base_user.id)
             self.assertEqual(has_language_filter, not base_user.has_language_filter)
 
+    # Update ban user
     def test_update_ban_user(self):
         for _ in range(0, 10):
             base_user = self.test_user.generate_random_user()
@@ -64,21 +70,24 @@ class TestUserManager(DaoTest):
             self.user_manager.update_ban_user_by_id(id=base_user.id)
             self.assertEqual(is_banned, not base_user.is_banned)
             
-
+    # Unregister, report and unreport user
     def test_actions(self):
+
+        # Unregister
         user = self.test_user.generate_random_user()
         self.user_manager.create_user(user=user)
         self.user_manager.unregister_user_by_id(user.id)
         user1 = self.user_manager.retrieve_by_id(user.id)
         self.assertEquals(user1.is_active, 0)
 
-
+        # Report
         user = self.test_user.generate_random_user()
         self.user_manager.create_user(user=user)
         self.user_manager.report_user_by_id(user.id)
         user1 = self.user_manager.retrieve_by_id(user.id)
         self.assertEquals(user1.is_reported, 1)
 
+        # Unreport
         self.user_manager.unreport_user_by_id(user.id)
         user2 = self.user_manager.retrieve_by_id(user.id)
         self.assertEqual(user2.is_reported, 0)

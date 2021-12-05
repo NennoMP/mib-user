@@ -1,6 +1,6 @@
-import re
-from .view_test import ViewTest
 from faker import Faker
+
+from .view_test import ViewTest
 from tests.models.test_user import TestUser
 
 

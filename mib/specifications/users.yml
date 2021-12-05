@@ -11,8 +11,7 @@ paths:
   /user:
     post:
       summary: Add a new user
-      tags:
-        - Users
+      tags: [ User ]
       operationId: mib.resources.users.create_user
       requestBody:
         description: Create a new customer inside microservice app
@@ -449,53 +448,29 @@ components:
       properties:
         firstname:
           type: string
-          description: First name of customer
+          description: First name of user
           example: Mario
         lastname:
           type: string
-          description: Last name of customer
+          description: Last name of user
           example: Rossi
         email:
           type: string
-          description: Customer email
-          example: mario.rossi@example.org
+          description: User email
+          example: mario.rossi@example.com
           format: email
         date_of_birth:
           type: string
-          description: Customer date_of_birth
+          description: User date_of_birth
           example: '2020-01-01'
           format: date
         location:
           type: string
-          description: Customer location
+          description: User location
           example: 'Pisa'
         password:
           type: string
-          description: Customer password
-          example: 'abcd1234'
+          description: User password
+          example: 'Banana91@'
           minLength: 5
           maxLength: 127
-
-    
-    UpdateUser:
-      required:
-        - email
-        - password
-        - location
-      type: object
-      properties:
-        email:
-          type: string
-          description: Customer email
-          example: mario.rossi@example.org
-          format: email
-        password:
-          type: string
-          description: Customer password
-          example: 'abcd1234'
-          minLength: 5
-          maxLength: 127
-        location:
-          type: string
-          description: Customer location
-          example: 'Pisa'

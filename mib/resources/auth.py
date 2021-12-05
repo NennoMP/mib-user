@@ -7,11 +7,13 @@ def authenticate(auth):
     """
     Authentication resource for generic user.
 
-    :param auth: a dict with email and password keys.
-    :return: the response 200 if credentials are correct, else 401
+    :param auth: a dict with <email> and <password> keys.
+    :return: 
+        - 200: credentials correct
+        - 401: invalid credentials OR inactive account
+        - 403: banned account
     """
 
-    user = UserManager.retrieve_by_email(auth['email'])
     response = {
         'authentication': 'failure',
         'message': 'Invalid credentials',
@@ -19,6 +21,7 @@ def authenticate(auth):
     }
     response_code = 401
 
+    user = UserManager.retrieve_by_email(auth['email'])
     if user:
         if user.authenticate(auth['password']):
             if not user.is_active:
@@ -49,11 +52,12 @@ def logout(auth):
     Logout resource for generic user.
 
     :param auth: a dict with email key.
-    :return: the response 200 if logout is correct
+    :return:
+        - 200: successfully logout
+        - 404: failed logout
     """
 
     user = UserManager.retrieve_by_email(auth['email'])
-   
     if user is not None:
         response = {
             'authentication': 'success',
@@ -69,6 +73,3 @@ def logout(auth):
             
         }
         return jsonify(response), 404
-
-
-    

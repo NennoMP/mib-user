@@ -1,14 +1,14 @@
-import re
-from .view_test import ViewTest
 from faker import Faker
-from tests.models.test_user import TestUser
 
+from .view_test import ViewTest
+from tests.models.test_user import TestUser
 
 
 class TestAuth(ViewTest):
     """
-        Simulate the user login for testing the resources
-        :return: user
+    Simulate the user login for testing the resources
+
+    :return: user
     """
 
     faker = Faker('it_IT')
@@ -17,9 +17,10 @@ class TestAuth(ViewTest):
     def setUpClass(cls):
         super(TestAuth, cls).setUpClass()
 
-    
+    # Logout tests
     def test_logout(self):
-        # login with a correct email
+
+        # Login with correct email
         user = TestUser.generate_random_user()
         psw = user.password
         user.set_password(user.password)
@@ -35,9 +36,11 @@ class TestAuth(ViewTest):
             'email': user.email
         }
 
+        # Logout
         response = self.client.post('/logout', json=data)
-        assert response.status_code == 200
         json_response = response.json
+
+        assert response.status_code == 200
         assert json_response["authentication"] == 'success'
         assert json_response["message"] == 'Successfully logout'
 
@@ -46,26 +49,21 @@ class TestAuth(ViewTest):
         }
 
         response = self.client.post('/logout', json=data)
-        assert response.status_code == 404
         json_response = response.json
+
+        assert response.status_code == 404
         assert json_response["authentication"] == 'failed'
         assert json_response["message"] == 'Failed logout'
 
-
-    
-
-
-
-    def test_login(self):
-        # login for a customer
+    # User tests
+    def test_user(self):
         user = TestUser.generate_random_user()
         
-        # login with a wrong email
+        # Login with wrong email
         data = {
             'email': user.email,
             'password': TestAuth.faker.password()
         }
-
         response = self.client.post('/authenticate', json=data)
         json_response = response.json
 
@@ -73,7 +71,7 @@ class TestAuth(ViewTest):
         assert json_response["authentication"] == 'failure'
         assert json_response['user'] is None
 
-        # login with a correct email
+        # Login with correct email
         user = TestUser.generate_random_user()
         psw = user.password
         user.set_password(user.password)
@@ -91,7 +89,7 @@ class TestAuth(ViewTest):
         assert json_response["authentication"] == 'success'
         assert json_response['user'] is not None
 
-        # login banned user
+        # Login banned user
         user = TestUser.generate_random_user()
         psw = user.password
         user.set_password(user.password)
@@ -125,7 +123,7 @@ class TestAuth(ViewTest):
         assert json_response["status"] == 'Failed'
         assert json_response["message"] == 'Unauthorized action'
 
-        # login unregistered user
+        # Login unregistered user
         user = TestUser.generate_random_user()
         psw = user.password
         user.set_password(user.password)
@@ -144,7 +142,7 @@ class TestAuth(ViewTest):
         assert json_response["message"] == 'Your account is no longer active!'
         assert json_response['user'] is None
 
-
+    # Admin tests
     def test_admin(self):
         admin = TestUser.generate_random_user()
 

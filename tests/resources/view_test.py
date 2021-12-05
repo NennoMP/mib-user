@@ -1,10 +1,8 @@
 import unittest
 
 class ViewTest(unittest.TestCase):
-    """
-    This class should be implemented by
-    all classes that tests resources
-    """
+    """This class should be implemented by all classes that tests resources."""
+    
     client = None
 
     @classmethod

@@ -1,21 +1,21 @@
-import re
-from .view_test import ViewTest
 from faker import Faker
+
+from .view_test import ViewTest
 from tests.models.test_user import TestUser
 
-
+# Utils for testing set of profile picture
 TEST_PATH_FILE = 'mib/static/images/test.png'
 TEST_BINARY_FILE = 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
 
 
 class TestUsers(ViewTest):
     """
-        Simulate the user login for testing the resources
-        :return: user
+    Simulate the user login for testing the resources
+
+    :return: user
     """
 
     faker = Faker('it_IT')
-
 
     @classmethod
     def create_and_login(cls):
@@ -42,6 +42,7 @@ class TestUsers(ViewTest):
         assert json_response["status"] == 'success'
         assert json_response["message"] == 'Successfully registered'
 
+    # Profile tests
     def test_profile(self):
         fake_id = 999
 
@@ -173,7 +174,9 @@ class TestUsers(ViewTest):
         assert json_response["status"] == 'success'
         assert json_response["message"] == 'Profile picture updated'
 
+    # Retrieve user tests
     def test_get_user(self):
+
         # GET non existent user by id
         fake_id = 999
         response = self.client.get('/user/{}'.format(fake_id))
@@ -202,7 +205,9 @@ class TestUsers(ViewTest):
 
         assert response.status_code == 200
 
+    # Retrieve users list tests
     def test_users_list(self):
+        
         # GET users list
         response = self.client.get('/users/')
         json_response = response.json
