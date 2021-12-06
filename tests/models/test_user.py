@@ -6,7 +6,7 @@ from .model_test import ModelTest
 
 
 class TestUser(ModelTest):
-    """Test for User table methods."""
+    """Tests for User table methods."""
 
     faker = Faker()
 

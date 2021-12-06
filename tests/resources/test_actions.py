@@ -5,10 +5,6 @@ from tests.models.test_user import TestUser
 
 
 class TestActions(ViewTest):
-    """
-        Simulate the user login for testing the resources
-        :return: user
-    """
 
     faker = Faker('it_IT')
 

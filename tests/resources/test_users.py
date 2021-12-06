@@ -9,11 +9,6 @@ TEST_BINARY_FILE = 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4
 
 
 class TestUsers(ViewTest):
-    """
-    Simulate the user login for testing the resources
-
-    :return: user
-    """
 
     faker = Faker('it_IT')
 
