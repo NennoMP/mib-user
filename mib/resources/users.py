@@ -68,6 +68,73 @@ def get_user(user_id: int):
     return jsonify(_user.serialize()), 200
 
 
+def get_bonus(user_id: int):
+    """
+    Get bonus of user by its id.
+
+    :param user_id: user id
+    :return: json response and status code
+        - 200: bonus retrieved
+        - 404: user not found
+    """
+
+    _user = UserManager.retrieve_by_id(user_id)
+    if _user is None:
+        response = {
+            'status': 'failed',
+            'message': 'User not present',
+            'bonus': -1
+        }
+        return jsonify(response), 404
+
+    response = {
+        'status': 'success',
+        'message': 'Bonus retrieved',
+        'bonus': _user.bonus
+    }
+    return jsonify(response), 200
+
+
+def set_bonus(user_id: int, body):
+    """
+    Set bonus of user by its id.
+
+    :param user_id: user id
+    :return: json response and status code
+        - 200: bonus updated
+        - 404: user not found
+        - 409: invalid bonus
+    """
+
+    _user = UserManager.retrieve_by_id(user_id)
+    if _user is None:
+        response = {
+            'status': 'failed',
+            'message': 'User not present',
+            'bonus': -1
+        }
+        return jsonify(response), 404
+        
+    if body['bonus'] < 0:
+        response = {
+            'status': 'failed',
+            'message': 'Negative bonus',
+            'bonus': -1
+        }
+        return jsonify(response), 409
+
+
+    _user.bonus = body['bonus']
+    UserManager.update_user(_user)
+    response = {
+        'status': 'success',
+        'message': 'Bonus updated',
+        'bonus': _user.bonus
+    }
+    return jsonify(response), 200
+
+
+
 def get_user_by_email(user_email: str):
     """
     Get a user by its current email.

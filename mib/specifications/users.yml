@@ -209,6 +209,63 @@ paths:
         default:
           description: An error occured while updating the language filter
 
+  /profile/{user_id}/bonus:
+    get:
+      tags: [ User ]
+      description: Get a user's bonus by its id
+      operationId: mib.resources.users.get_bonus
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Return user bonus
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the bonus of user
+    
+    post:
+      tags: [ User ]
+      description: Update the bonus of user
+      operationId: mib.resources.users.set_bonus
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: body
+              type: object
+              required:
+                - bonus
+                properties:
+                bonus:
+                  type: int64
+                  example: 2
+                 responses:
+        200:
+          description: Bonus user updated
+        404:
+          description: Bonus user not updated
+        409:
+          description: Bonus user not updated
+        default:
+          description: An error occured during the update of the bonus of user
+
+
   /user_email/{user_email}:
     get:
       tags: [ User ]
