@@ -28,6 +28,7 @@ def create_user():
             'message': 'User already exists'
         }), 403
 
+    print(post_data)
     user = User()
     date_of_birth = datetime.datetime.strptime(
                                         post_data.get('date_of_birth'),'%Y-%m-%d'
@@ -46,7 +47,7 @@ def create_user():
         'status': 'success',
         'message': 'Successfully registered',
     }
-
+    print("TEST")
     return jsonify(response_object), 201
 
 

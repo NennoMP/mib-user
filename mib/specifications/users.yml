@@ -251,11 +251,12 @@ paths:
               type: object
               required:
                 - bonus
-                properties:
+              properties:
                 bonus:
-                  type: int64
+                  type: integer
+                  format: int64
                   example: 2
-                 responses:
+      responses:
         200:
           description: Bonus user updated
         404:
@@ -264,7 +265,6 @@ paths:
           description: Bonus user not updated
         default:
           description: An error occured during the update of the bonus of user
-
 
   /user_email/{user_email}:
     get:
