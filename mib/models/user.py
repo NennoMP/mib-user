@@ -18,9 +18,9 @@ class User(db.Model):
     # A list of (user) fields to be serialized for the profile
     SERIALIZE_PROFILE_LIST = [
                             'id', 'email', 'first_name',
-                            'last_name', 'location', 'is_active',
+                            'last_name', 'location', 'profile_pic', 'is_active',
                             'is_admin', 'is_reported', 'is_banned', 'authenticated', 'is_anonymous', 'bonus',
-                            'has_language_filter', 'profile_pic'
+                            'has_language_filter'
                         ]
 
     # Data

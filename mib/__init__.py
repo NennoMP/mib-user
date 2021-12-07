@@ -76,7 +76,7 @@ def create_app():
     )
 
     # Checking the environment
-    if flask_env == 'testing' or flask_env == 'development':
+    if flask_env == 'testing' or flask_env == 'development' or flask_env == 'production':
         # we need to populate the db
         db.create_all(app=app)
 
