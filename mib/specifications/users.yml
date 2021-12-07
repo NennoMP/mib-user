@@ -228,7 +228,7 @@ paths:
         404:
           description: User not found
         default:
-          description: An error occured during retrieving the bonus of user
+          description: An error occured while retrieving the bonus of user
     
     post:
       tags: [ User ]
@@ -260,9 +260,9 @@ paths:
         200:
           description: Bonus user updated
         404:
-          description: Bonus user not updated
+          description: Bonus not updated, user not found
         409:
-          description: Bonus user not updated
+          description: Bonus user not updated, given bonus paramater is negative
         default:
           description: An error occured during the update of the bonus of user
 

@@ -104,7 +104,7 @@ def set_bonus(user_id: int, body):
     :return: json response and status code
         - 200: bonus updated
         - 404: user not found
-        - 409: invalid bonus
+        - 409: invalid (negative) bonus value
     """
 
     _user = UserManager.retrieve_by_id(user_id)
@@ -124,7 +124,6 @@ def set_bonus(user_id: int, body):
         }
         return jsonify(response), 409
 
-
     _user.bonus = body['bonus']
     UserManager.update_user(_user)
     response = {
@@ -133,7 +132,6 @@ def set_bonus(user_id: int, body):
         'bonus': _user.bonus
     }
     return jsonify(response), 200
-
 
 
 def get_user_by_email(user_email: str):
