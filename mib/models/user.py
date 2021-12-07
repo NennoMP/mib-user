@@ -96,16 +96,16 @@ class User(db.Model):
     def update_banned(self):
         self.is_banned = not self.is_banned
 
-    # Set user <authenticated> to False
-    def set_logout(self):
-        self.authenticated = False
-
     # Authenticate the user
     def authenticate(self, password: str):
         checked = check_password_hash(self.password, password)
         self.authenticated = checked
         
         return self.authenticated
+
+    # Set user <authenticated> to False
+    def set_logout(self):
+        self.authenticated = False
 
     # Update user <has_language_filter>
     def update_language_filter(self):

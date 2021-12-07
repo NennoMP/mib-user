@@ -36,6 +36,8 @@ class UserManager(Manager):
     def unregister_user(user: User):
         """Unregister a specific user."""
         Manager.unregister(user=user)
+        user.set_logout()
+        Manager.save_auth()
 
     @staticmethod
     def unregister_user_by_id(id_: int):

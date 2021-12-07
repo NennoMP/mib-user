@@ -39,6 +39,7 @@ def authenticate(auth):
                 }
                 response_code = 403
             else:
+                UserManager.save_auth()
                 response['authentication'] = 'success'
                 response['message'] = 'Valid credentials'
                 response['user'] = user.serialize()

@@ -387,7 +387,6 @@ paths:
                     error_message:
                       type: string        
 
-
   /users/:
     get:
       tags: [ User ]
