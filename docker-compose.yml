@@ -33,6 +33,38 @@ services:
       - POSTGRES_HOST=db
     depends_on:
       - db
+      - redis
+
+  redis:
+    image: redis
+
+  celery-beat:
+    image: celery
+    build: .
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    command: celery -A background beat -l info
+    depends_on:
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND_URL=redis://redis:6379/0
+      - C_FORCE_ROOT=true
+
+  celery-work:
+    image: celery
+    build: .
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    command: celery -A background worker -l info
+    depends_on:
+      - redis
+      - celery-beat
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND_URL=redis://redis:6379/0
+      - C_FORCE_ROOT=true
+
 
 # Declaring all volumes
 volumes:
