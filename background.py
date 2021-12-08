@@ -1,16 +1,9 @@
-from mib import create_app
+import os, smtplib, ssl
+
 import random
-import os
-import smtplib
-import ssl
-
 from celery import Celery
-from mib import db
-from mib.models.user import User
 
-
-
-os.environ['FLASK_ENV'] = 'development'
+os.environ['FLASK_ENV']='development'
 
 
 BACKEND = BROKER = 'redis://localhost:6379/0'
@@ -19,6 +12,7 @@ celery = Celery(__name__, broker=BROKER, backend=BACKEND)
 
 _APP = None
 
+from mib import create_app
 
 def lazy_init():
     '''Returns the application singleton.'''
@@ -47,8 +41,8 @@ def send_email(email, message):
     {message}'''
 
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-        #server.starttls(context=context)
+    with smtplib.SMTP_SSL(smtp_server, port,context=context) as server:
+        server.starttls(context=context)
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, message)
 
@@ -61,11 +55,10 @@ def notify(user_id, message):
     app = lazy_init()
     with app.app_context():
         from mib.dao.user_manager import UserManager
-        try:
-            user = UserManager.get_profile_by_id(user_id)
+        try: user = UserManager.get_profile_by_id(user_id)
         except RuntimeError as e:
             print(str(e))
-            return
+            return 
         if user is None or not user['is_active']:
             return 'Email not sent'
 
@@ -77,10 +70,13 @@ def notify(user_id, message):
 @celery.task
 def lottery():
     '''Increases the bonus of a random user
-    and sends a notification for that.
+        and sends a notification for that.
     '''
     app = lazy_init()
     with app.app_context():
+        from mib import db
+        from mib.models.user import User
+
         n_users = int(User.query.count())
         random_n = random.randint(0, n_users+1)
         random_user = User.query.filter_by(id=random_n).first()
@@ -89,7 +85,7 @@ def lottery():
             return 'Redoing lottery'
 
         random_user.bonus += 1
-        db.session.commit()        
+        db.session.commit()
         message = 'Congratulations, you won a bonus deletion!'
         notify.delay(random_user.id, message)
 
@@ -103,5 +99,4 @@ def setup_periodic_tasks(sender, **kwargs):
         'minute': 1,
         'month': 60*60*24*30
     }
-    # Lottery every month.
     sender.add_periodic_task(seconds_in_a['month'], lottery.s(), name='lottery')

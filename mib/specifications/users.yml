@@ -478,7 +478,7 @@ paths:
               required:
                 - user_id
               properties:
-                id:
+                user_id:
                   type: integer
                   format: int64
       responses:
