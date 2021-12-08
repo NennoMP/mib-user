@@ -1,0 +1,13 @@
+language: python
+python: 3.9
+env:
+    - TOX_ENV=py39
+    
+install:
+    - pip install tox
+
+services:
+    - redis-server    
+
+script:
+    - tox -e $TOX_ENV
