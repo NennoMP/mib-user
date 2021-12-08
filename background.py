@@ -2,6 +2,7 @@ import os, smtplib, ssl
 
 import random
 from celery import Celery
+import config
 
 os.environ['FLASK_ENV']='development'
 
@@ -55,15 +56,15 @@ def notify(user_id, message):
     app = lazy_init()
     with app.app_context():
         from mib.dao.user_manager import UserManager
-        try: user = UserManager.get_profile_by_id(user_id)
+        try: user = UserManager.retrieve_by_id(user_id)
         except RuntimeError as e:
             print(str(e))
             return 
-        if user is None or not user['is_active']:
+        if user is None or not user.is_active:
             return 'Email not sent'
 
-        send_email(user['email'], message)
-        print(user['email'])
+        #send_email(user.email, message)
+        print(user.email)
     return 'Email sent'
 
 
