@@ -20,8 +20,6 @@ class Manager(object):
         for bean in kwargs.values():
             db.session.add(bean)
             bean.authenticated = True
-            if bean.email == 'admin@example.com':
-                bean.is_admin = True
         db.session.commit()
 
     @staticmethod
