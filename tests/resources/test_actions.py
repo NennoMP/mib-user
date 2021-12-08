@@ -12,6 +12,55 @@ class TestActions(ViewTest):
     def setUpClass(cls):
         super(TestActions, cls).setUpClass()
 
+    def test_get_bonus(self):
+
+        # Get unexistent user bonus
+        url = '/profile/999/bonus'
+        response = self.client.get(url)
+        assert response.status_code == 404
+
+        # Create a user
+        user = self.test_user.generate_random_user()
+        self.user_manager.create_user(user=user)
+
+        # Get user bonus
+        url = f'/profile/{user.id}/bonus'
+        response = self.client.get(url)
+        assert response.status_code == 200
+
+    def test_set_bonus(self):
+
+        # Set unexistent user bonus
+        url = '/profile/999/bonus'
+        data = {
+            'bonus': 5
+        }
+        response = self.client.post(url, json=data)
+        assert response.status_code == 404
+
+        # Create a user
+        data = {
+            'bonus': 5
+        }
+        user = self.test_user.generate_random_user()
+        self.user_manager.create_user(user=user)
+
+        # Set negative value bonus
+        url = f'/profile/{user.id}/bonus'
+        data = {
+            'bonus': -1
+        }
+        response = self.client.post(url, json=data)
+        assert response.status_code == 409
+
+        # Set user bonus
+        url = f'/profile/{user.id}/bonus'
+        data = {
+            'bonus': 5
+        }
+        response = self.client.post(url, json=data)
+        assert response.status_code == 200
+
     def test_report(self):
 
         # Create a user to report
