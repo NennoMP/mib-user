@@ -13,9 +13,11 @@ WORKDIR /app
 
 # installing all requirements
 RUN ["pip", "install", "-r", "requirements.prod.txt"]
+ENV CELERY_BROKER_URL=redis://redis:6379/0
+ENV CELERY_RESULT_BACKEND=redis://redis:6379/0
 
 # exposing the port
-EXPOSE 5000/tcp
+EXPOSE 5001/tcp
 
 # Main command
 CMD ["gunicorn", "--config", "gunicorn.conf.py", "wsgi:app"]
