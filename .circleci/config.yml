@@ -23,7 +23,7 @@ jobs:
     # Change the version below to your required version of python
     docker:
       - image: cimg/python:3.8
-      - image: cimg/node:10.0.0
+      - image: 'cimg/node:10.0.0'
     environment: 
       - FLASK_ENV: testing
     steps:
@@ -37,6 +37,9 @@ jobs:
           name: Run tests
           # This assumes pytest is installed via the install-package step above
           command: pytest
+      - run:
+          name: Install and Make
+          command: npm install && make test-coverage    
       - store_artifacts:
           path: htmlcov
       - coveralls/upload:
