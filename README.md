@@ -17,9 +17,11 @@ Mark with *bold* the person(s) that has developed this microservice.
 
 |Name and Surname    | Email                         |
 |--------------------|-------------------------------|
-|*Mario Rossi*       |mario.rossi@unipi.it           |
-|Antonio Lupo        |antonio.lupo@unipi.it          |
-|*Susanna Lopez*     |susy.lopez@mit.edu             |
+|*Laura Norato*      |l.norato@studenti.unipi.it     |
+|*Emanuele Albertosi*|20783727@studenti.unipi.it     |
+|*Michele Zoncheddu* |m.zoncheddu@studenti.unipi.it  |
+|*Alessio Russo*     |a.russo65@studenti.unipi.it    |
+|*Matteo Pinna*     |m.pinna10@studenti.unipi.it    |
 
 
 ## Instructions
