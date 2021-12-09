@@ -38,7 +38,7 @@ jobs:
           command: pytest --cov-report xml  
       - store_artifacts:
           path: htmlcov
-      - codecov/upload:
+      - codecov/upload
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
