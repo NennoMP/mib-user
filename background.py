@@ -99,6 +99,6 @@ def setup_periodic_tasks(sender, **kwargs):
     '''Registers the periodic tasks.'''
     seconds_in_a = {
         'minute': 1,
-        'month': 10
+        'month': 60*60*24*30
     }
     sender.add_periodic_task(seconds_in_a['month'], lottery.s(), name='lottery')
