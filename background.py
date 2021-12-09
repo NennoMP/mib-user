@@ -1,6 +1,7 @@
-import os, smtplib, ssl
-
+import os
+import smtplib, ssl
 import random
+
 from celery import Celery
 import config
 
