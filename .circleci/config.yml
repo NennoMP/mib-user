@@ -38,8 +38,7 @@ jobs:
           command: pytest   
       - store_artifacts:
           path: htmlcov
-      - coveralls/upload:
-          path_to_lcov: .coverage
+      - coveralls/upload
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
