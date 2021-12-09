@@ -25,6 +25,7 @@ jobs:
       - image: cimg/python:3.8-node
     environment: 
       - FLASK_ENV: testing
+      - CODECOV_TOKEN: 75ee7a11-c830-40e9-9e34-c2afe902f464
     steps:
       - checkout
       - python/install-packages:
