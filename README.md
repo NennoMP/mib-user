@@ -1,5 +1,7 @@
 # Message in A Bottle - users
 
+![CircleCI](https://circleci.com/gh/NennoMP/mib-user.svg?style=svg)
+
 This is the source code of Message in a Bottle application, self project of *Advanced Software Engineering* course,
 University of Pisa.
 
