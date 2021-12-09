@@ -23,7 +23,7 @@ jobs:
     # Change the version below to your required version of python
     docker:
       - image: cimg/python:3.8
-      - image: circleci/node:10.16.0
+      - image: circleci/node
     environment: 
       - FLASK_ENV: testing
     steps:
@@ -36,10 +36,7 @@ jobs:
       - run:
           name: Run tests
           # This assumes pytest is installed via the install-package step above
-          command: pytest
-      - run:
-          name: Install and Make
-          command: npm install && make test-coverage    
+          command: pytest   
       - store_artifacts:
           path: htmlcov
       - coveralls/upload:
