@@ -29,8 +29,6 @@ jobs:
           pip-dependency-file: requirements.dev.txt
           # app-dir: ~/project/package-directory/  # If you're requirements.txt isn't in the root directory.
           # pip-dependency-file: requirements.dev.txt  # if you have a different name for your requirements file, maybe one that combines your runtime and test requirements.
-      - enviroment:
-          command: export FLASK_ENV=testing
       - run:
           name: Run tests
           # This assumes pytest is installed via the install-package step above
